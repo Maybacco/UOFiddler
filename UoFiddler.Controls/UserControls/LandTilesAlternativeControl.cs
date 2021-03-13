@@ -1,9 +1,9 @@
 /***************************************************************************
  *
  * $Author: Turley
- *
+ * 
  * "THE BEER-WARE LICENSE"
- * As long as you retain this notice you can do whatever you want with
+ * As long as you retain this notice you can do whatever you want with 
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  *
@@ -25,9 +25,9 @@ using UoFiddler.Controls.Helpers;
 namespace UoFiddler.Controls.UserControls
 {
     // TODO: add "Show free slots" support
-    public partial class LandTilesControl : UserControl
+    public partial class LandTilesAlternativeControl : UserControl
     {
-        public LandTilesControl()
+        public LandTilesAlternativeControl()
         {
             InitializeComponent();
 
@@ -38,7 +38,7 @@ namespace UoFiddler.Controls.UserControls
 
         public bool IsLoaded { get; private set; }
 
-        private static LandTilesControl _refMarker;
+        private static LandTilesAlternativeControl _refMarker;
         private int _selectedGraphicId = -1;
         private readonly List<int> _tileList = new List<int>();
 
@@ -163,16 +163,14 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnFilePathChangeEvent()
         {
-            Reload();
+            if (Options.DesignAlternative)
+            {
+                Reload();
+            }
         }
 
         private void UpdateToolStripLabels(int graphic)
         {
-            if (!IsLoaded)
-            {
-                return;
-            }
-
             NameLabel.Text = $"Name: {TileData.LandTable[graphic].Name}";
             GraphicLabel.Text = string.Format("ID: 0x{0:X4} ({0})", graphic);
             FlagsLabel.Text = $"Flags: {TileData.LandTable[graphic].Flags}";
@@ -180,6 +178,11 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnTileDataChangeEvent(object sender, int id)
         {
+            if (!Options.DesignAlternative)
+            {
+                return;
+            }
+
             if (!IsLoaded)
             {
                 return;
@@ -205,6 +208,11 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnLandTileChangeEvent(object sender, int index)
         {
+            if (!Options.DesignAlternative)
+            {
+                return;
+            }
+
             if (!IsLoaded)
             {
                 return;
@@ -562,11 +570,6 @@ namespace UoFiddler.Controls.UserControls
 
         private void LandTilesTileView_DrawItem(object sender, TileView.TileViewControl.DrawTileListItemEventArgs e)
         {
-            if (FormsDesignerHelper.IsInDesignMode())
-            {
-                return;
-            }
-
             Point itemPoint = new Point(e.Bounds.X + LandTilesTileView.TilePadding.Left, e.Bounds.Y + LandTilesTileView.TilePadding.Top);
             const int fixedTileSize = 44;
             Size itemSize = new Size(fixedTileSize, fixedTileSize);
@@ -705,115 +708,6 @@ namespace UoFiddler.Controls.UserControls
             if (!done)
             {
                 _tileList.Add(index);
-            }
-        }
-
-        private void InsertStartingFromTb_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode != Keys.Enter || !Utils.ConvertStringToInt(StartingFromTb.Text, out int index, 0, 0x3FFF))
-            {
-                return;
-            }
-
-            contextMenuStrip1.Close();
-            using (OpenFileDialog dialog = new OpenFileDialog())
-            {
-                dialog.Multiselect = true;
-                dialog.Title = $"Choose image file to insert at 0x{index:X} +";
-                dialog.CheckFileExists = true;
-                dialog.Filter = "Image files (*.tif;*.tiff;*.bmp)|*.tif;*.tiff;*.bmp";
-                if (dialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                if (CheckForIndexes(index, dialog.FileNames.Length)) //Ho tutti gli indici necessari disponibili in linea
-                {
-                    for (int i = 0; i < dialog.FileNames.Length; i++)
-                    {
-                        var currentIdx = index + i;
-                        AddSingleLandTile(dialog.FileNames[i], currentIdx);
-                    }
-                }
-
-                listView1.View = View.Details; // that works fascinating
-                listView1.View = View.Tile;
-
-                if (listView1.SelectedItems.Count == 1)
-                {
-                    listView1.SelectedItems[0].Selected = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check if all the indexes from baseIndex to baseIndex + count are valid
-        /// </summary>
-        /// <param name="baseIndex">Starting Index</param>
-        /// <param name="count">Number of the indexes to check.</param>
-        /// <returns></returns>
-        private bool CheckForIndexes(int baseIndex, int count)
-        {
-            for (int i = baseIndex; i < baseIndex + count; i++)
-            {
-                if (i >= 0x4000 || Art.IsValidLand(i))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Adds a single LandTile at the determined index.
-        /// </summary>
-        /// <param name="fileName">The image filename</param>
-        /// <param name="index">The index where the gump should be added</param>
-        private void AddSingleLandTile(string fileName, int index)
-        {
-            Bitmap bmp = new Bitmap(fileName);
-            if (bmp.Height != 44 || bmp.Width != 44)
-            {
-                MessageBox.Show("Height or Width Invalid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                return;
-            }
-            if (fileName.Contains(".bmp"))
-            {
-                bmp = Utils.ConvertBmp(bmp);
-            }
-
-            Art.ReplaceLand(index, bmp);
-            ControlEvents.FireLandTileChangeEvent(this, index);
-            Options.ChangedUltimaClass["Art"] = true;
-            ListViewItem item = new ListViewItem(index.ToString(), 0)
-            {
-                Tag = index
-            };
-
-            if (_showFreeSlots)
-            {
-                listView1.Items[index] = item;
-                listView1.Invalidate();
-            }
-            else
-            {
-                bool done = false;
-                foreach (ListViewItem i in listView1.Items)
-                {
-                    if ((int)i.Tag <= index)
-                    {
-                        continue;
-                    }
-
-                    listView1.Items.Insert(i.Index, item);
-                    done = true;
-                    break;
-                }
-
-                if (!done)
-                {
-                    listView1.Items.Add(item);
-                }
             }
         }
     }
