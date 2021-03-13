@@ -1,9 +1,9 @@
 /***************************************************************************
  *
  * $Author: Turley
- * 
+ *
  * "THE BEER-WARE LICENSE"
- * As long as you retain this notice you can do whatever you want with 
+ * As long as you retain this notice you can do whatever you want with
  * this stuff. If we meet some day, and you think this stuff is worth it,
  * you can buy me a beer in return.
  *
@@ -366,6 +366,10 @@ namespace UoFiddler.Controls.UserControls
             ChangeMap();
         }
 
+        private Point RectStartPoint;
+        private Rectangle Rect = new Rectangle();
+        private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
+
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
             if (PreloadWorker.IsBusy)
@@ -379,6 +383,14 @@ namespace UoFiddler.Controls.UserControls
                 _movingPoint.X = e.X;
                 _movingPoint.Y = e.Y;
                 Cursor = Cursors.Hand;
+                Rect = new Rectangle();
+                SelectedAreaLabel.Text = "Selected Area: (0,0) - (0,0)";
+                Invalidate();
+            }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                RectStartPoint = e.Location;
+                Invalidate();
             }
             else
             {
@@ -394,6 +406,18 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
+            if (e.Button == MouseButtons.Middle)
+            {
+                _xEnd = Math.Min(_currMap.Width, (int)(e.X / Zoom) + Round(hScrollBar.Value));
+                _yEnd = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
+
+
+                _xStart = Math.Min(_currMap.Width, (int)(Rect.X / Zoom) + Round(hScrollBar.Value));
+                _yStart = Math.Min(_currMap.Height, (int)(Rect.Y / Zoom) + Round(vScrollBar.Value));
+
+                SelectedAreaLabel.Text = $"Selected Area: ({_xStart},{_yStart}) - ({_xEnd},{_yEnd})";
+            }
+
             _moving = false;
             Cursor = Cursors.Default;
         }
@@ -404,6 +428,22 @@ namespace UoFiddler.Controls.UserControls
             int yDelta = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
 
             CoordsLabel.Text = $"Coords: {xDelta},{yDelta}";
+
+            if (e.Button == MouseButtons.Middle)
+            {
+                Point tempEndPoint = e.Location;
+                Rect.Location = new Point(
+                    Math.Min(RectStartPoint.X, tempEndPoint.X),
+                    Math.Min(RectStartPoint.Y, tempEndPoint.Y));
+                Rect.Size = new Size(
+                    Math.Abs(RectStartPoint.X - tempEndPoint.X),
+                    Math.Abs(RectStartPoint.Y - tempEndPoint.Y));
+                pictureBox.Invalidate();
+            } else
+            {
+                //Rect = new Rectangle();
+                //pictureBox.Invalidate();
+            }
 
             if (!_moving)
             {
@@ -469,22 +509,27 @@ namespace UoFiddler.Controls.UserControls
                     feluccaToolStripMenuItem.Checked = true;
                     _currMap = Map.Felucca;
                     break;
+
                 case 1:
                     trammelToolStripMenuItem.Checked = true;
                     _currMap = Map.Trammel;
                     break;
+
                 case 2:
                     ilshenarToolStripMenuItem.Checked = true;
                     _currMap = Map.Ilshenar;
                     break;
+
                 case 3:
                     malasToolStripMenuItem.Checked = true;
                     _currMap = Map.Malas;
                     break;
+
                 case 4:
                     tokunoToolStripMenuItem.Checked = true;
                     _currMap = Map.Tokuno;
                     break;
+
                 case 5:
                     terMurToolStripMenuItem.Checked = true;
                     _currMap = Map.TerMur;
@@ -621,6 +666,8 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
+
+
             if (PreloadWorker.IsBusy)
             {
                 e.Graphics.DrawString("Preloading map. Please wait...", SystemFonts.DefaultFont, Brushes.Black, 60, 60);
@@ -680,6 +727,11 @@ namespace UoFiddler.Controls.UserControls
                 {
                     o.Draw(e.Graphics);
                 }
+            }
+
+            if (Rect != null && Rect.Width > 0 && Rect.Height > 0)
+            {
+                e.Graphics.FillRectangle(selectionBrush, Rect);
             }
         }
 
@@ -856,7 +908,7 @@ namespace UoFiddler.Controls.UserControls
                     int c = int.Parse(element.GetAttribute("color"));
                     string text = element.GetAttribute("text");
                     OverlayCursor o = new OverlayCursor(new Point(x, y), m, text, Color.FromArgb(c));
-                    TreeNode node = new TreeNode(text) {Tag = o};
+                    TreeNode node = new TreeNode(text) { Tag = o };
                     OverlayObjectTree.Nodes[m].Nodes.Add(node);
                 }
             }
@@ -1093,6 +1145,17 @@ namespace UoFiddler.Controls.UserControls
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
         }
 
+        private void ExportMapOnClick(object sender, EventArgs e)
+        {
+
+
+            Cursor.Current = Cursors.WaitCursor;
+            _currMap.ExportMapFragment(Options.OutputPath, _xStart, _yStart, _xEnd, _yEnd);
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show($"Report saved to {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
+                MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+        }
+
         private void OnClickReportInvalidMapIDs(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -1283,6 +1346,10 @@ namespace UoFiddler.Controls.UserControls
         }
 
         private MapReplaceTilesForm _showMapReplaceTilesForm;
+        private int _xEnd;
+        private int _yEnd;
+        private int _xStart;
+        private int _yStart;
 
         private void OnClickReplaceTiles(object sender, EventArgs e)
         {
@@ -1297,14 +1364,47 @@ namespace UoFiddler.Controls.UserControls
             };
             _showMapReplaceTilesForm.Show();
         }
+
+        private void ImportMapFragmentClick(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Title = "Choose json file to open",
+                CheckFileExists = true,
+                Filter = "json files (*.json)|*.json"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if (!File.Exists(dialog.FileName))
+                {
+                    return;
+                }
+
+            }
+            dialog.Dispose();
+        }
     }
 
     public class OverlayObject
     {
-        public virtual bool IsVisible(Rectangle bounds, int m) { return false; }
-        public virtual void Draw(Graphics g) { }
-        public virtual void Save(XmlElement elem) { }
-        public override string ToString() { return ""; }
+        public virtual bool IsVisible(Rectangle bounds, int m)
+        {
+            return false;
+        }
+
+        public virtual void Draw(Graphics g)
+        {
+        }
+
+        public virtual void Save(XmlElement elem)
+        {
+        }
+
+        public override string ToString()
+        {
+            return "";
+        }
 
         public bool Visible { get; set; }
         public Point Loc { get; protected set; }

@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Ultima
 {
@@ -919,6 +921,35 @@ namespace Ultima
                     }
                 }
             }
+        }
+
+        public void ExportMapFragment(string path, int startX, int startY, int endX, int endY)
+        {
+            path = Path.Combine(path, $"mapFragment-{_mapId}.json");
+
+            List<LandTileInfo> landTiles = new List<LandTileInfo>();
+            List<StaticsTileInfo> staticTiles = new List<StaticsTileInfo>();
+            for (int x = startX; x <= endX; x++)
+            {
+                for (int y = startY; y <= endY; y++)
+                {
+                    Tile currtile = Tiles.GetLandTile(x, y);
+                    landTiles.Add(new LandTileInfo() { X = x, Y = y, Z = currtile.Z, Id = currtile.Id });
+                    foreach (HuedTile currstatic in Tiles.GetStaticTiles(x, y))
+                    {
+                        staticTiles.Add(new StaticsTileInfo() { X = x, Y = y, Z = currstatic.Z, Id = currstatic.Id, Hue = currstatic.Hue });
+                    }
+                }
+            }
+
+            MapExtraction mapExtraction = new MapExtraction()
+            {
+                LandTiles = landTiles,
+                StaticTiles = staticTiles,
+            };
+
+            var json = JsonConvert.SerializeObject(mapExtraction);
+            File.WriteAllText(path, json);
         }
 
         public void ReportInvalidMapIDs(string reportfile)

@@ -48,6 +48,7 @@ namespace UoFiddler.Controls.UserControls
             this.CoordsLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ClientLocLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ZoomLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.SelectedAreaLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.zoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,6 +110,8 @@ namespace UoFiddler.Controls.UserControls
             this.insertDiffDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.replaceTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importMapFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
@@ -125,7 +128,8 @@ namespace UoFiddler.Controls.UserControls
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CoordsLabel,
             this.ClientLocLabel,
-            this.ZoomLabel});
+            this.ZoomLabel,
+            this.SelectedAreaLabel});
             this.statusStrip.Location = new System.Drawing.Point(0, 296);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(623, 33);
@@ -155,6 +159,12 @@ namespace UoFiddler.Controls.UserControls
             this.ZoomLabel.Size = new System.Drawing.Size(100, 28);
             this.ZoomLabel.Text = "Zoom: ";
             this.ZoomLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // SelectedAreaLabel
+            // 
+            this.SelectedAreaLabel.Name = "SelectedAreaLabel";
+            this.SelectedAreaLabel.Size = new System.Drawing.Size(119, 28);
+            this.SelectedAreaLabel.Text = "SelectedArea 0,0 - 0,0";
             // 
             // pictureBox
             // 
@@ -567,7 +577,9 @@ namespace UoFiddler.Controls.UserControls
             this.copyToolStripMenuItem,
             this.insertDiffDataToolStripMenuItem,
             this.toolStripSeparator7,
-            this.replaceTilesToolStripMenuItem});
+            this.replaceTilesToolStripMenuItem,
+            this.exportMapToolStripMenuItem,
+            this.importMapFragmentToolStripMenuItem});
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
             this.toolStripDropDownButton3.Size = new System.Drawing.Size(45, 22);
@@ -669,6 +681,20 @@ namespace UoFiddler.Controls.UserControls
             this.replaceTilesToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
             this.replaceTilesToolStripMenuItem.Text = "Replace Tiles..";
             this.replaceTilesToolStripMenuItem.Click += new System.EventHandler(this.OnClickReplaceTiles);
+            // 
+            // exportMapToolStripMenuItem
+            // 
+            this.exportMapToolStripMenuItem.Name = "exportMapToolStripMenuItem";
+            this.exportMapToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.exportMapToolStripMenuItem.Text = "Export Map...";
+            this.exportMapToolStripMenuItem.Click += new System.EventHandler(this.ExportMapOnClick);
+            // 
+            // importMapFragmentToolStripMenuItem
+            // 
+            this.importMapFragmentToolStripMenuItem.Name = "importMapFragmentToolStripMenuItem";
+            this.importMapFragmentToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.importMapFragmentToolStripMenuItem.Text = "Import Map Fragment...";
+            this.importMapFragmentToolStripMenuItem.Click += new System.EventHandler(this.ImportMapFragmentClick);
             // 
             // collapsibleSplitter2
             // 
@@ -803,5 +829,8 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripStatusLabel ZoomLabel;
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripStatusLabel SelectedAreaLabel;
+        private System.Windows.Forms.ToolStripMenuItem exportMapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importMapFragmentToolStripMenuItem;
     }
 }

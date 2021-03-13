@@ -127,7 +127,7 @@ namespace Ultima
             if (mapDataPath != null && mapIndexPath != null)
             {
                 LandBlocks = new Tile[matrix.BlockWidth][][];
-                LandBlocksCount = PatchLand(matrix, mapDataPath, mapIndexPath);
+                //LandBlocksCount = PatchLand(matrix, mapDataPath, mapIndexPath);
             }
 
             string staDataPath, staIndexPath, staLookupPath;
@@ -164,7 +164,7 @@ namespace Ultima
             }
 
             StaticBlocks = new HuedTile[matrix.BlockWidth][][][][];
-            StaticBlocksCount = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
+            //StaticBlocksCount = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
         }
 
         private int PatchLand(TileMatrix matrix, string dataPath, string indexPath)
