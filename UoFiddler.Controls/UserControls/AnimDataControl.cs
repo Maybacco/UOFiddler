@@ -233,11 +233,6 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-            if (_selAnimdataEntry.FrameStart == (byte)numericUpDownStartDelay.Value)
-            {
-                return;
-            }
-
             _selAnimdataEntry.FrameStart = (byte)numericUpDownStartDelay.Value;
             Options.ChangedUltimaClass["Animdata"] = true;
         }
@@ -245,11 +240,6 @@ namespace UoFiddler.Controls.UserControls
         private void OnValueChangedFrameDelay(object sender, EventArgs e)
         {
             if (_selAnimdataEntry == null)
-            {
-                return;
-            }
-
-            if (_selAnimdataEntry.FrameInterval == (byte)numericUpDownFrameDelay.Value)
             {
                 return;
             }
@@ -423,49 +413,49 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickRemove(object sender, EventArgs e)
         {
-            if (_selAnimdataEntry == null || treeViewFrames.SelectedNode == null)
+            if (_selAnimdataEntry != null)
             {
-                return;
-            }
-
-            int index = treeViewFrames.SelectedNode.Index;
-            int i;
-            for (i = index; i < _selAnimdataEntry.FrameCount - 1; ++i)
-            {
-                _selAnimdataEntry.FrameData[i] = _selAnimdataEntry.FrameData[i + 1];
-            }
-
-            for (; i < _selAnimdataEntry.FrameData.Length; ++i)
-            {
-                _selAnimdataEntry.FrameData[i] = 0;
-            }
-
-            _selAnimdataEntry.FrameCount--;
-            treeView1.BeginUpdate();
-            treeViewFrames.BeginUpdate();
-            treeViewFrames.Nodes.Clear();
-            TreeNode node = treeView1.SelectedNode.Parent ?? treeView1.SelectedNode;
-            node.Nodes.Clear();
-            for (i = 0; i < _selAnimdataEntry.FrameCount; ++i)
-            {
-                int frame = CurrAnim + _selAnimdataEntry.FrameData[i];
-                if (Art.IsValidStatic(frame))
+                if (treeViewFrames.SelectedNode != null)
                 {
-                    TreeNode subNode = new TreeNode
+                    int index = treeViewFrames.SelectedNode.Index;
+                    int i;
+                    for (i = index; i < _selAnimdataEntry.FrameCount - 1; ++i)
                     {
-                        Text = $"0x{frame:X4} {TileData.ItemTable[frame].Name}"
-                    };
-                    node.Nodes.Add(subNode);
-                    treeViewFrames.Nodes.Add((TreeNode)subNode.Clone());
-                }
-                else
-                {
-                    break;
+                        _selAnimdataEntry.FrameData[i] = _selAnimdataEntry.FrameData[i + 1];
+                    }
+                    for (; i < _selAnimdataEntry.FrameData.Length; ++i)
+                    {
+                        _selAnimdataEntry.FrameData[i] = 0;
+                    }
+
+                    _selAnimdataEntry.FrameCount--;
+                    treeView1.BeginUpdate();
+                    treeViewFrames.BeginUpdate();
+                    treeViewFrames.Nodes.Clear();
+                    TreeNode node = treeView1.SelectedNode.Parent ?? treeView1.SelectedNode;
+                    node.Nodes.Clear();
+                    for (i = 0; i < _selAnimdataEntry.FrameCount; ++i)
+                    {
+                        int frame = CurrAnim + _selAnimdataEntry.FrameData[i];
+                        if (Art.IsValidStatic(frame))
+                        {
+                            TreeNode subNode = new TreeNode
+                            {
+                                Text = $"0x{frame:X4} {TileData.ItemTable[frame].Name}"
+                            };
+                            node.Nodes.Add(subNode);
+                            treeViewFrames.Nodes.Add((TreeNode)subNode.Clone());
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    treeViewFrames.EndUpdate();
+                    treeView1.EndUpdate();
+                    Options.ChangedUltimaClass["Animdata"] = true;
                 }
             }
-            treeViewFrames.EndUpdate();
-            treeView1.EndUpdate();
-            Options.ChangedUltimaClass["Animdata"] = true;
         }
 
         private void OnClickSave(object sender, EventArgs e)
