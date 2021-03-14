@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Ultima;
@@ -370,6 +371,7 @@ namespace UoFiddler.Controls.UserControls
         private Point RectStartPoint;
         private Rectangle Rect = new Rectangle();
         private List<Rectangle> _rectangles = new List<Rectangle>();
+        private List<RegionRectangleInfo> _regionInfoes = new List<RegionRectangleInfo>();
         private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
 
         private void OnMouseDown(object sender, MouseEventArgs e)
@@ -387,6 +389,7 @@ namespace UoFiddler.Controls.UserControls
                 Cursor = Cursors.Hand;
                 Rect = new Rectangle();
                 _rectangles.Clear();
+                _regionInfoes.Clear();
                 SelectedAreaLabel.Text = "Selected Area: (0,0) - (0,0)";
                 Invalidate();
             }
@@ -410,7 +413,15 @@ namespace UoFiddler.Controls.UserControls
             }
             if (ModifierKeys.HasFlag(Keys.Control) && e.Button == MouseButtons.Middle)
             {
+                _xEnd = Math.Min(_currMap.Width, (int)(e.X / Zoom) + Round(hScrollBar.Value));
+                _yEnd = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
+
+                _xStart = Math.Min(_currMap.Width, (int)(Rect.X / Zoom) + Round(hScrollBar.Value));
+                _yStart = Math.Min(_currMap.Height, (int)(Rect.Y / Zoom) + Round(vScrollBar.Value));
+
                 _rectangles.Add(Rect);
+                _regionInfoes.Add(new RegionRectangleInfo() { StartX = _xStart, EndX = _xEnd, StartY = _yStart, EndY = _yEnd }) ;
+
             }
             else if (e.Button == MouseButtons.Middle)
             {
@@ -1395,7 +1406,7 @@ namespace UoFiddler.Controls.UserControls
 
         private void ExportRegionClick(object sender, EventArgs e)
         {
-            new RegionExporterForm(_rectangles).Show();
+            new RegionExporterForm(_regionInfoes).Show();
         }
     }
 

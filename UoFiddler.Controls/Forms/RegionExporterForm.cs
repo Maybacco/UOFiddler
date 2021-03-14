@@ -5,19 +5,20 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using UoFiddler.Controls.Classes;
 
 namespace UoFiddler.Controls.Forms
 {
     public partial class RegionExporterForm : Form
     {
-        private readonly List<Rectangle> _rectangles;
+        private readonly List<RegionRectangleInfo> _rectangles;
 
         public RegionExporterForm()
         {
             InitializeComponent();
         }
 
-        public RegionExporterForm(List<Rectangle> rectangles) : this()
+        public RegionExporterForm(List<RegionRectangleInfo> rectangles) : this()
         {
             _rectangles = rectangles;
             RectanglesTb.Text = $"{rectangles.Count}";
@@ -26,19 +27,20 @@ namespace UoFiddler.Controls.Forms
         private void ExportButton_Click(object sender, EventArgs e)
         {
             var stream = new MemoryStream();
-            using (XmlWriter writer = XmlWriter.Create(stream))
+            XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
+            using (XmlWriter writer = XmlWriter.Create(stream, settings))
             {
-                writer.WriteStartDocument();
+
                 writer.WriteStartElement("region");
                 writer.WriteAttributeString("priority", RegionPriorityTb.Text);
                 writer.WriteAttributeString("name", RegionNameTb.Text);
-                foreach (Rectangle rect in _rectangles)
+                foreach (var rect in _rectangles)
                 {
                     writer.WriteStartElement("rect");
-                    writer.WriteAttributeString("x", rect.X.ToString());
-                    writer.WriteAttributeString("y", rect.Y.ToString());
-                    writer.WriteAttributeString("width", rect.Width.ToString());
-                    writer.WriteAttributeString("heigth", rect.Height.ToString());
+                    writer.WriteAttributeString("x", rect.StartX.ToString());
+                    writer.WriteAttributeString("y", rect.StartY.ToString());
+                    writer.WriteAttributeString("width", $"{rect.EndX - rect.StartX}");
+                    writer.WriteAttributeString("height", $"{rect.EndY - rect.StartY}");
                     writer.WriteEndElement();
                 }
 
@@ -47,7 +49,7 @@ namespace UoFiddler.Controls.Forms
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
-                writer.WriteEndDocument();
+
             }
             string strXml = Encoding.UTF8.GetString(stream.ToArray());
 
