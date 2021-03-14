@@ -1392,6 +1392,11 @@ namespace UoFiddler.Controls.UserControls
             }
             dialog.Dispose();
         }
+
+        private void ExportRegionClick(object sender, EventArgs e)
+        {
+            new RegionExporterForm(_rectangles).Show();
+        }
     }
 
     public class OverlayObject
