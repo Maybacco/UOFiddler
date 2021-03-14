@@ -110,8 +110,10 @@ namespace UoFiddler.Controls.UserControls
             this.insertDiffDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.replaceTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importMapFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.exportMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importVezFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
@@ -250,6 +252,7 @@ namespace UoFiddler.Controls.UserControls
             // 
             // TextBoxGoto
             // 
+            this.TextBoxGoto.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TextBoxGoto.Name = "TextBoxGoto";
             this.TextBoxGoto.Size = new System.Drawing.Size(100, 23);
             this.TextBoxGoto.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownGoto);
@@ -578,8 +581,10 @@ namespace UoFiddler.Controls.UserControls
             this.insertDiffDataToolStripMenuItem,
             this.toolStripSeparator7,
             this.replaceTilesToolStripMenuItem,
+            this.importMapFragmentToolStripMenuItem,
+            this.toolStripSeparator8,
             this.exportMapToolStripMenuItem,
-            this.importMapFragmentToolStripMenuItem});
+            this.importVezFragmentToolStripMenuItem});
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
             this.toolStripDropDownButton3.Size = new System.Drawing.Size(45, 22);
@@ -682,19 +687,31 @@ namespace UoFiddler.Controls.UserControls
             this.replaceTilesToolStripMenuItem.Text = "Replace Tiles..";
             this.replaceTilesToolStripMenuItem.Click += new System.EventHandler(this.OnClickReplaceTiles);
             // 
-            // exportMapToolStripMenuItem
-            // 
-            this.exportMapToolStripMenuItem.Name = "exportMapToolStripMenuItem";
-            this.exportMapToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
-            this.exportMapToolStripMenuItem.Text = "Export Map...";
-            this.exportMapToolStripMenuItem.Click += new System.EventHandler(this.ExportMapOnClick);
-            // 
             // importMapFragmentToolStripMenuItem
             // 
             this.importMapFragmentToolStripMenuItem.Name = "importMapFragmentToolStripMenuItem";
             this.importMapFragmentToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
             this.importMapFragmentToolStripMenuItem.Text = "Import Map Fragment...";
             this.importMapFragmentToolStripMenuItem.Click += new System.EventHandler(this.ImportMapFragmentClick);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(305, 6);
+            // 
+            // exportMapToolStripMenuItem
+            // 
+            this.exportMapToolStripMenuItem.Name = "exportMapToolStripMenuItem";
+            this.exportMapToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.exportMapToolStripMenuItem.Text = "Map and Statics Export(JSON)...";
+            this.exportMapToolStripMenuItem.Click += new System.EventHandler(this.ExportMapOnClick);
+            // 
+            // importVezFragmentToolStripMenuItem
+            // 
+            this.importVezFragmentToolStripMenuItem.Name = "importVezFragmentToolStripMenuItem";
+            this.importVezFragmentToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.importVezFragmentToolStripMenuItem.Text = "Import Fragment(JSON)...";
+            this.importVezFragmentToolStripMenuItem.Click += new System.EventHandler(this.importVezFragmentToolStripMenuItem_Click);
             // 
             // collapsibleSplitter2
             // 
@@ -832,5 +849,7 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripStatusLabel SelectedAreaLabel;
         private System.Windows.Forms.ToolStripMenuItem exportMapToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importMapFragmentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importVezFragmentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
     }
 }

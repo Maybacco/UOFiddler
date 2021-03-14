@@ -927,18 +927,26 @@ namespace Ultima
         {
             path = Path.Combine(path, $"mapFragment-{_mapId}.json");
 
-            List<LandTileInfo> landTiles = new List<LandTileInfo>();
-            List<StaticsTileInfo> staticTiles = new List<StaticsTileInfo>();
-            for (int x = startX; x <= endX; x++)
+            int startXChunk = startX >> 3;
+            int startYChunk = startY >> 3;
+            int endXChunk = endX >> 3;
+            int endYChunk = endY >> 3;
+
+            List<LandTileChunk> landTiles = new List<LandTileChunk>();
+            List<StaticsTileChunk> staticTiles = new List<StaticsTileChunk>();
+
+            for (int x = startXChunk; x <= endXChunk; ++x)
             {
-                for (int y = startY; y <= endY; y++)
+                for (int y = startYChunk; y <= endYChunk; ++y)
                 {
-                    Tile currtile = Tiles.GetLandTile(x, y);
-                    landTiles.Add(new LandTileInfo() { X = x, Y = y, Z = currtile.Z, Id = currtile.Id });
-                    foreach (HuedTile currstatic in Tiles.GetStaticTiles(x, y))
+                    Tile[] temp = Tiles.GetLandBlock(x, y);
+                    List<TileMap> tilemap = new List<TileMap>();
+                    foreach (Tile t in temp)
                     {
-                        staticTiles.Add(new StaticsTileInfo() { X = x, Y = y, Z = currstatic.Z, Id = currstatic.Id, Hue = currstatic.Hue });
+                        tilemap.Add(new TileMap() { Id = t.Id, Z = t.Z });
                     }
+                    landTiles.Add(new LandTileChunk() { X = x, Y = y, L = tilemap });
+                    staticTiles.Add(new StaticsTileChunk() { X = x, Y = y, L = Tiles.GetStaticBlock(x, y) });
                 }
             }
 

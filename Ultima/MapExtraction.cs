@@ -17,16 +17,16 @@ namespace Ultima
     public class MapExtraction
     {
         [JsonProperty]
-        public List<LandTileInfo> LandTiles { get; set; }
+        public List<LandTileChunk> LandTiles { get; set; }
 
         [JsonProperty]
-        public List<StaticsTileInfo> StaticTiles { get; set; }
+        public List<StaticsTileChunk> StaticTiles { get; set; }
 
         [JsonConstructor]
         public MapExtraction() { }
     }
 
-    public class LandTileInfo
+    /*public class LandTileInfo
     {
         [JsonProperty]
         public int X { get; set; }
@@ -44,9 +44,53 @@ namespace Ultima
         public LandTileInfo()
         {
         }
+    }*/
+
+    public class StaticsTileChunk
+    {
+        [JsonProperty]
+        public int X { get; set; }
+
+        [JsonProperty]
+        public int Y { get; set; }
+
+        [JsonProperty]
+        public HuedTile[][][] L { get; set; }
+
+        [JsonConstructor]
+        public StaticsTileChunk()
+        {
+        }
     }
 
-    public class StaticsTileInfo
+    public class LandTileChunk
+    {
+        [JsonProperty]
+        public int X { get; set; }
+
+        [JsonProperty]
+        public int Y { get; set; }
+
+        [JsonProperty]
+        public List<TileMap> L { get; set; }
+
+        [JsonConstructor]
+        public LandTileChunk()
+        {
+        }
+    }
+
+    public class TileMap
+    {
+        public ushort Id { get; set; }
+        public sbyte Z { get; set; }
+
+        public TileMap()
+        {
+        }
+    }
+
+    /*public class StaticsTileInfo
     {
         [JsonProperty]
         public int X { get; set; }
@@ -67,5 +111,5 @@ namespace Ultima
         public StaticsTileInfo()
         {
         }
-    }
+    }*/
 }

@@ -10,13 +10,17 @@
  ***************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using Newtonsoft.Json;
 using Ultima;
 using UoFiddler.Controls.Classes;
 using UoFiddler.Controls.Forms;
@@ -1383,6 +1387,310 @@ namespace UoFiddler.Controls.UserControls
 
             }
             dialog.Dispose();
+        }
+
+        private void importVezFragmentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Title = "Choose json file to open",
+                CheckFileExists = true,
+                Filter = "json files (*.json)|*.json"
+            };
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if (!File.Exists(dialog.FileName))
+                {
+                    return;
+                }
+
+            }
+            dialog.Dispose();
+            string path = dialog.FileName;
+            importFileFragment(path);
+        }
+
+        private void importFileFragment(string filename)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            //OPEN JSON
+            MapExtraction extraction = JsonConvert.DeserializeObject<MapExtraction>(File.ReadAllText(@filename));
+            List<LandTileChunk> landTiles = extraction.LandTiles;
+            List<StaticsTileChunk> staticTiles = extraction.StaticTiles;
+
+            Dictionary<Point, List<TileMap>> landData = new Dictionary<Point, List<TileMap>>();
+            foreach(LandTileChunk chunk in landTiles)
+            {
+                landData.Add(new Point() { X = chunk.X, Y = chunk.Y }, chunk.L);
+            }
+
+            Dictionary<Point, HuedTile[][][]> staticData = new Dictionary<Point, HuedTile[][][]>();
+            foreach(StaticsTileChunk chunk in staticTiles)
+            {
+                staticData.Add(new Point() { X = chunk.X, Y = chunk.Y }, chunk.L);
+            }
+
+            string mapPath = Files.GetFilePath($"map{_currMap.FileIndex}.mul");
+
+            BinaryReader mMapReader;
+
+            if (mapPath != null)
+            {
+                FileStream mMap = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                mMapReader = new BinaryReader(mMap);
+            }
+            else
+            {
+                MessageBox.Show("Map file not found!", "Map Replace", MessageBoxButtons.OK, MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1);
+                return;
+            }
+
+            string indexPath = Files.GetFilePath($"staidx{_currMap.FileIndex}.mul");
+            BinaryReader mIndexReader;
+
+            if (indexPath != null)
+            {
+                FileStream mIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                mIndexReader = new BinaryReader(mIndex);
+            }
+            else
+            {
+                MessageBox.Show("Static file not found!", "Map Replace", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                return;
+            }
+
+            string staticsPath = Files.GetFilePath($"statics{_currMap.FileIndex}.mul");
+            FileStream mStatics;
+            BinaryReader mStaticsReader;
+
+            if (staticsPath != null)
+            {
+                mStatics = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                mStaticsReader = new BinaryReader(mStatics);
+            }
+            else
+            {
+                MessageBox.Show("Static file not found!", "Map Replace", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                return;
+            }
+
+            int blockY = _currMap.Height >> 3;
+            int blockX = _currMap.Width >> 3;
+            int landCounter = 0;
+            int staticsCounter = 0;
+
+            string mul = Path.Combine(Options.OutputPath, $"map{_currMap.FileIndex}.mul");
+            using (FileStream fsMul = new FileStream(mul, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                using (BinaryWriter binMul = new BinaryWriter(fsMul))
+                {
+                    for (int x = 0; x < blockX; ++x)
+                    {
+                        for (int y = 0; y < blockY; ++y)
+                        {
+                            mMapReader.BaseStream.Seek(((x * blockY) + y) * 196, SeekOrigin.Begin);
+                            int header = mMapReader.ReadInt32();
+                            binMul.Write(header);
+
+                            Point point;
+                            if (landData.ContainsKey(point = new Point() { X = x, Y = y }))
+                            {
+                                for (int i = 0; i < 64; ++i)
+                                {
+                                    ushort tileId;
+                                    sbyte z;
+
+                                    tileId = (ushort)landData[point][i].Id;
+                                    z = (sbyte)landData[point][i].Z;
+
+                                    tileId = Art.GetLegalItemID(tileId);
+
+                                    if (z < -128)
+                                    {
+                                        z = -128;
+                                    }
+
+                                    if (z > 127)
+                                    {
+                                        z = 127;
+                                    }
+
+                                    binMul.Write(tileId);
+                                    binMul.Write(z);
+                                    landCounter++;
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < 64; ++i)
+                                {
+                                    ushort tileId;
+                                    sbyte z;
+
+                                    tileId = mMapReader.ReadUInt16();
+                                    z = mMapReader.ReadSByte();
+
+                                    tileId = Art.GetLegalItemID(tileId);
+
+                                    if (z < -128)
+                                    {
+                                        z = -128;
+                                    }
+
+                                    if (z > 127)
+                                    {
+                                        z = 127;
+                                    }
+
+                                    binMul.Write(tileId);
+                                    binMul.Write(z);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            string idx = Path.Combine(Options.OutputPath, $"staidx{_currMap.FileIndex}.mul");
+            string stamul = Path.Combine(Options.OutputPath, $"statics{_currMap.FileIndex}.mul");
+            using (FileStream fsIdx = new FileStream(idx, FileMode.Create, FileAccess.Write, FileShare.Write),
+                fsStaMul = new FileStream(stamul, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                using (BinaryWriter binidx = new BinaryWriter(fsIdx),
+                    binstamul = new BinaryWriter(fsStaMul))
+                {
+                    for (int x = 0; x < blockX; ++x)
+                    {
+                        for (int y = 0; y < blockY; ++y)
+                        {
+                            bool firstItem = true;
+                            int fsMulLength = (int)fsStaMul.Position;
+                            int extra = 0;
+
+                            Point point;
+                            if (staticData.ContainsKey(point = new Point() { X = x, Y = y }))
+                            {
+                                int _countX = 0;
+                                foreach (HuedTile[][] _x in staticData[point])
+                                {
+                                    int _countY = 0;
+                                    foreach(HuedTile[] _y in _x)
+                                    {
+                                        foreach(HuedTile _z in _y)
+                                        {
+                                            if (firstItem)
+                                            {
+                                                binidx.Write((int)fsStaMul.Position); // lookup
+                                                firstItem = false;
+                                            }
+                                            binstamul.Write((ushort)_z.Id);
+                                            binstamul.Write((byte)_countX);
+                                            binstamul.Write((byte)_countY);
+                                            binstamul.Write((sbyte)_z.Z);
+                                            binstamul.Write((ushort)_z.Hue);
+                                            staticsCounter++;
+                                        }
+                                        _countY++;
+                                    }
+                                    _countX++;
+                                }
+
+                                fsMulLength = (int)fsStaMul.Position - fsMulLength;
+                                if (fsMulLength > 0)
+                                {
+                                    binidx.Write(fsMulLength); // length
+                                    binidx.Write(extra); // extra
+                                }
+                                else
+                                {
+                                    binidx.Write(-1); // lookup
+                                    binidx.Write(-1); // length
+                                    binidx.Write(-1); // extra
+                                }
+
+                            }
+                            else
+                            {
+                                int lookup, length;
+                                mIndexReader.BaseStream.Seek(((x * blockY) + y) * 12, SeekOrigin.Begin);
+                                lookup = mIndexReader.ReadInt32();
+                                length = mIndexReader.ReadInt32();
+                                extra = mIndexReader.ReadInt32();
+
+                                if (lookup < 0 || length <= 0)
+                                {
+                                    binidx.Write(-1); // lookup
+                                    binidx.Write(-1); // length
+                                    binidx.Write(-1); // extra
+                                }
+                                else
+                                {
+                                    mStatics.Seek(lookup, SeekOrigin.Begin);
+                                    int count = length / 7;
+                                    for (int i = 0; i < count; ++i)
+                                    {
+                                        ushort graphic;
+                                        short sHue;
+                                        byte sx, sy;
+                                        sbyte sz;
+
+                                        graphic = mStaticsReader.ReadUInt16();
+                                        sx = mStaticsReader.ReadByte();
+                                        sy = mStaticsReader.ReadByte();
+                                        sz = mStaticsReader.ReadSByte();
+                                        sHue = mStaticsReader.ReadInt16();
+
+                                        if (graphic > Art.GetMaxItemID())
+                                        {
+                                            continue;
+                                        }
+
+                                        if (sHue < 0)
+                                        {
+                                            sHue = 0;
+                                        }
+
+                                        if (firstItem)
+                                        {
+                                            binidx.Write((int)fsStaMul.Position); // lookup
+                                            firstItem = false;
+                                        }
+                                        binstamul.Write(graphic);
+                                        binstamul.Write(sx);
+                                        binstamul.Write(sy);
+                                        binstamul.Write(sz);
+                                        binstamul.Write(sHue);
+                                    }
+
+                                    fsMulLength = (int)fsStaMul.Position - fsMulLength;
+                                    if (fsMulLength > 0)
+                                    {
+                                        binidx.Write(fsMulLength); // length
+                                        binidx.Write(extra); // extra
+                                    }
+                                    else
+                                    {
+                                        binidx.Write(-1); // lookup
+                                        binidx.Write(-1); // length
+                                        binidx.Write(-1); // extra
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            mMapReader.Close();
+            mIndexReader.Close();
+            mStaticsReader.Close();
+
+            MessageBox.Show($"Success Land: {landCounter}, Statics: {staticsCounter}", "Extraction", MessageBoxButtons.OK);
+            Cursor.Current = Cursors.Default;
+            return;
         }
     }
 

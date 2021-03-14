@@ -225,6 +225,7 @@ namespace Ultima
 
             return tiles;
         }
+
         public Tile GetLandTile(int x, int y, bool patch)
         {
             return GetLandBlock(x >> 3, y >> 3, patch)[((y & 0x7) << 3) + (x & 0x7)];
