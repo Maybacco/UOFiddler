@@ -10,6 +10,7 @@
  ***************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -368,6 +369,7 @@ namespace UoFiddler.Controls.UserControls
 
         private Point RectStartPoint;
         private Rectangle Rect = new Rectangle();
+        private List<Rectangle> _rectangles = new List<Rectangle>();
         private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
 
         private void OnMouseDown(object sender, MouseEventArgs e)
@@ -384,6 +386,7 @@ namespace UoFiddler.Controls.UserControls
                 _movingPoint.Y = e.Y;
                 Cursor = Cursors.Hand;
                 Rect = new Rectangle();
+                _rectangles.Clear();
                 SelectedAreaLabel.Text = "Selected Area: (0,0) - (0,0)";
                 Invalidate();
             }
@@ -405,12 +408,14 @@ namespace UoFiddler.Controls.UserControls
             {
                 return;
             }
-
-            if (e.Button == MouseButtons.Middle)
+            if (ModifierKeys.HasFlag(Keys.Control) && e.Button == MouseButtons.Middle)
+            {
+                _rectangles.Add(Rect);
+            }
+            else if (e.Button == MouseButtons.Middle)
             {
                 _xEnd = Math.Min(_currMap.Width, (int)(e.X / Zoom) + Round(hScrollBar.Value));
                 _yEnd = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
-
 
                 _xStart = Math.Min(_currMap.Width, (int)(Rect.X / Zoom) + Round(hScrollBar.Value));
                 _yStart = Math.Min(_currMap.Height, (int)(Rect.Y / Zoom) + Round(vScrollBar.Value));
@@ -439,7 +444,8 @@ namespace UoFiddler.Controls.UserControls
                     Math.Abs(RectStartPoint.X - tempEndPoint.X),
                     Math.Abs(RectStartPoint.Y - tempEndPoint.Y));
                 pictureBox.Invalidate();
-            } else
+            }
+            else
             {
                 //Rect = new Rectangle();
                 //pictureBox.Invalidate();
@@ -666,8 +672,6 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-
-
             if (PreloadWorker.IsBusy)
             {
                 e.Graphics.DrawString("Preloading map. Please wait...", SystemFonts.DefaultFont, Brushes.Black, 60, 60);
@@ -732,6 +736,13 @@ namespace UoFiddler.Controls.UserControls
             if (Rect != null && Rect.Width > 0 && Rect.Height > 0)
             {
                 e.Graphics.FillRectangle(selectionBrush, Rect);
+            }
+            if (_rectangles.Count > 0)
+            {
+                foreach (var rect in _rectangles)
+                {
+                    e.Graphics.FillRectangle(selectionBrush, rect);
+                }
             }
         }
 
@@ -1147,8 +1158,6 @@ namespace UoFiddler.Controls.UserControls
 
         private void ExportMapOnClick(object sender, EventArgs e)
         {
-
-
             Cursor.Current = Cursors.WaitCursor;
             _currMap.ExportMapFragment(Options.OutputPath, _xStart, _yStart, _xEnd, _yEnd);
             Cursor.Current = Cursors.Default;
@@ -1380,7 +1389,6 @@ namespace UoFiddler.Controls.UserControls
                 {
                     return;
                 }
-
             }
             dialog.Dispose();
         }
