@@ -114,10 +114,10 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.exportMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importVezFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
-            this.exportRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -582,10 +582,9 @@ namespace UoFiddler.Controls.UserControls
             this.insertDiffDataToolStripMenuItem,
             this.toolStripSeparator7,
             this.replaceTilesToolStripMenuItem,
-            this.importMapFragmentToolStripMenuItem,
             this.toolStripSeparator8,
             this.exportMapToolStripMenuItem,
-            this.importVezFragmentToolStripMenuItem});
+            this.importVezFragmentToolStripMenuItem,
             this.importMapFragmentToolStripMenuItem,
             this.exportRegionToolStripMenuItem});
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -716,6 +715,13 @@ namespace UoFiddler.Controls.UserControls
             this.importVezFragmentToolStripMenuItem.Text = "Import Fragment(JSON)...";
             this.importVezFragmentToolStripMenuItem.Click += new System.EventHandler(this.importVezFragmentToolStripMenuItem_Click);
             // 
+            // exportRegionToolStripMenuItem
+            // 
+            this.exportRegionToolStripMenuItem.Name = "exportRegionToolStripMenuItem";
+            this.exportRegionToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.exportRegionToolStripMenuItem.Text = "Export Region...";
+            this.exportRegionToolStripMenuItem.Click += new System.EventHandler(this.ExportRegionClick);
+            // 
             // collapsibleSplitter2
             // 
             this.collapsibleSplitter2.AnimationDelay = 20;
@@ -747,13 +753,6 @@ namespace UoFiddler.Controls.UserControls
             this.toolTip1.SetToolTip(this.collapsibleSplitter1, "Click To Show/Hide Toolbar");
             this.collapsibleSplitter1.UseAnimations = false;
             this.collapsibleSplitter1.VisualStyle = UoFiddler.Controls.UserControls.VisualStyles.DoubleDots;
-            // 
-            // exportRegionToolStripMenuItem
-            // 
-            this.exportRegionToolStripMenuItem.Name = "exportRegionToolStripMenuItem";
-            this.exportRegionToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
-            this.exportRegionToolStripMenuItem.Text = "Export Region...";
-            this.exportRegionToolStripMenuItem.Click += new System.EventHandler(this.ExportRegionClick);
             // 
             // MapControl
             // 
