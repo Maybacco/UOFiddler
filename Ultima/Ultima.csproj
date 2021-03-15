@@ -23,5 +23,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="PresentationCore" />
+		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 </Project>

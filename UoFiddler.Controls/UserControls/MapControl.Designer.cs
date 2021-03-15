@@ -110,7 +110,6 @@ namespace UoFiddler.Controls.UserControls
             this.insertDiffDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.replaceTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importMapFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.exportMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importVezFragmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -585,7 +584,6 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripSeparator8,
             this.exportMapToolStripMenuItem,
             this.importVezFragmentToolStripMenuItem,
-            this.importMapFragmentToolStripMenuItem,
             this.exportRegionToolStripMenuItem});
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
@@ -689,13 +687,6 @@ namespace UoFiddler.Controls.UserControls
             this.replaceTilesToolStripMenuItem.Text = "Replace Tiles..";
             this.replaceTilesToolStripMenuItem.Click += new System.EventHandler(this.OnClickReplaceTiles);
             // 
-            // importMapFragmentToolStripMenuItem
-            // 
-            this.importMapFragmentToolStripMenuItem.Name = "importMapFragmentToolStripMenuItem";
-            this.importMapFragmentToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
-            this.importMapFragmentToolStripMenuItem.Text = "Import Map Fragment...";
-            this.importMapFragmentToolStripMenuItem.Click += new System.EventHandler(this.ImportMapFragmentClick);
-            // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -713,7 +704,7 @@ namespace UoFiddler.Controls.UserControls
             this.importVezFragmentToolStripMenuItem.Name = "importVezFragmentToolStripMenuItem";
             this.importVezFragmentToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
             this.importVezFragmentToolStripMenuItem.Text = "Import Fragment(JSON)...";
-            this.importVezFragmentToolStripMenuItem.Click += new System.EventHandler(this.importVezFragmentToolStripMenuItem_Click);
+            this.importVezFragmentToolStripMenuItem.Click += new System.EventHandler(this.importFragmentToolStripMenuItem_Click);
             // 
             // exportRegionToolStripMenuItem
             // 
@@ -857,7 +848,6 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripMenuItem zoomToolStripMenuItem1;
         private System.Windows.Forms.ToolStripStatusLabel SelectedAreaLabel;
         private System.Windows.Forms.ToolStripMenuItem exportMapToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importMapFragmentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importVezFragmentToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem exportRegionToolStripMenuItem;
