@@ -17,6 +17,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -59,7 +60,8 @@ namespace UoFiddler.Controls.UserControls
         private int _clientZ;
         private int _clientMap;
         private Point _currPoint;
-        private bool _moving;
+        private bool _isSelecting;
+        private bool _isMoving;
         private Point _movingPoint;
         private bool _renderingZoom;
 
@@ -85,7 +87,7 @@ namespace UoFiddler.Controls.UserControls
             }
 
             Zoom = 1;
-            _moving = false;
+            _isMoving = false;
             OnLoad(this, EventArgs.Empty);
         }
 
@@ -266,11 +268,13 @@ namespace UoFiddler.Controls.UserControls
             }
 
             ChangeScrollBar();
+            ResetSelectionRect();
             pictureBox.Invalidate();
         }
 
         private void ChangeMap()
         {
+            ResetSelectionRect();
             PreloadMap.Visible = !_currMap.IsCached(showStaticsToolStripMenuItem1.Checked);
             SetScrollBarValues();
             pictureBox.Invalidate();
@@ -371,10 +375,19 @@ namespace UoFiddler.Controls.UserControls
         }
 
         private Point RectStartPoint;
-        private Rectangle Rect = new Rectangle();
+        private Rectangle SelectionRect = new Rectangle();
         private List<Rectangle> _rectangles = new List<Rectangle>();
         private List<RegionRectangleInfo> _regionInfoes = new List<RegionRectangleInfo>();
         private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
+
+        public void ResetSelectionRect(bool invalidate = false)
+        {
+            _xStart = _yStart = _xEnd = _yEnd = 0;
+            SelectionRect = new Rectangle();
+            SelectedAreaLabel.Text = "Selected Area: (0,0) - (0,0)";
+            if (invalidate)
+                pictureBox.Invalidate();
+        }
 
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
@@ -383,26 +396,27 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-            if (e.Button == MouseButtons.Left)
+            ResetSelectionRect(true);
+
+            if (e.Button == MouseButtons.Left && !_isSelecting)
             {
-                _moving = true;
+                _isMoving = true;
                 _movingPoint.X = e.X;
                 _movingPoint.Y = e.Y;
                 Cursor = Cursors.Hand;
-                Rect = new Rectangle();
-                _rectangles.Clear();
-                _regionInfoes.Clear();
-                SelectedAreaLabel.Text = "Selected Area: (0,0) - (0,0)";
+
                 Invalidate();
             }
-            else if (e.Button == MouseButtons.Middle)
+            else if (e.Button == MouseButtons.Middle && !_isMoving)
             {
+                _isSelecting = true;
                 RectStartPoint = e.Location;
                 Invalidate();
             }
             else
             {
-                _moving = false;
+                _isSelecting = false;
+                _isMoving = false;
                 Cursor = Cursors.Default;
             }
         }
@@ -413,30 +427,19 @@ namespace UoFiddler.Controls.UserControls
             {
                 return;
             }
-            if (ModifierKeys.HasFlag(Keys.Control) && e.Button == MouseButtons.Middle)
+
+            if (_isSelecting)
             {
-                _xEnd = Math.Min(_currMap.Width, (int)(e.X / Zoom) + Round(hScrollBar.Value));
-                _yEnd = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
+                _xEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
+                _yEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
 
-                _xStart = Math.Min(_currMap.Width, (int)(Rect.X / Zoom) + Round(hScrollBar.Value));
-                _yStart = Math.Min(_currMap.Height, (int)(Rect.Y / Zoom) + Round(vScrollBar.Value));
 
-                _rectangles.Add(Rect);
-                _regionInfoes.Add(new RegionRectangleInfo() { StartX = _xStart, EndX = _xEnd, StartY = _yStart, EndY = _yEnd });
-
-            }
-            else if (e.Button == MouseButtons.Middle)
-            {
-                _xEnd = Math.Min(_currMap.Width, (int)(e.X / Zoom) + Round(hScrollBar.Value));
-                _yEnd = Math.Min(_currMap.Height, (int)(e.Y / Zoom) + Round(vScrollBar.Value));
-
-                _xStart = Math.Min(_currMap.Width, (int)(Rect.X / Zoom) + Round(hScrollBar.Value));
-                _yStart = Math.Min(_currMap.Height, (int)(Rect.Y / Zoom) + Round(vScrollBar.Value));
-
+                _xStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
+                _yStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
                 SelectedAreaLabel.Text = $"Selected Area: ({_xStart},{_yStart}) - ({_xEnd},{_yEnd})";
             }
-
-            _moving = false;
+            _isSelecting = false;
+            _isMoving = false;
             Cursor = Cursors.Default;
         }
 
@@ -447,24 +450,28 @@ namespace UoFiddler.Controls.UserControls
 
             CoordsLabel.Text = $"Coords: {xDelta},{yDelta}";
 
-            if (e.Button == MouseButtons.Middle)
+            if (_isSelecting)
             {
                 Point tempEndPoint = e.Location;
-                Rect.Location = new Point(
-                    Math.Min(RectStartPoint.X, tempEndPoint.X),
-                    Math.Min(RectStartPoint.Y, tempEndPoint.Y));
-                Rect.Size = new Size(
-                    Math.Abs(RectStartPoint.X - tempEndPoint.X),
-                    Math.Abs(RectStartPoint.Y - tempEndPoint.Y));
+
+                SelectionRect.Location = new Point(
+                    Math.Min(RectStartPoint.X, Math.Max(0, tempEndPoint.X)),
+                    Math.Min(RectStartPoint.Y, Math.Max(0, tempEndPoint.Y)));
+                SelectionRect.Size = new Size(
+                    Math.Abs(RectStartPoint.X - Math.Max(0, tempEndPoint.X)),
+                    Math.Abs(RectStartPoint.Y - Math.Max(0, tempEndPoint.Y)));
+
+                int tempXEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
+                int tempYEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
+
+
+                int tempXStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
+                int tempYStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
+                SelectedAreaLabel.Text = $"Selected Area: ({tempXStart},{tempYStart}) - ({tempXEnd},{tempYEnd})";
                 pictureBox.Invalidate();
             }
-            else
-            {
-                //Rect = new Rectangle();
-                //pictureBox.Invalidate();
-            }
 
-            if (!_moving)
+            if (!_isMoving)
             {
                 return;
             }
@@ -516,6 +523,7 @@ namespace UoFiddler.Controls.UserControls
             SetScrollBarValues();
             hScrollBar.Value = (int)Math.Max(0, x - (pictureBox.Right / Zoom / 2));
             vScrollBar.Value = (int)Math.Max(0, y - (pictureBox.Bottom / Zoom / 2));
+            ResetSelectionRect();
             pictureBox.Invalidate();
             ClientLocLabel.Text = $"ClientLoc: {x},{y},{z},{Options.MapNames[mapClient]}";
         }
@@ -638,7 +646,7 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnZoomMinus(object sender, EventArgs e)
         {
-            if (Zoom / 2 < 0.25)
+            if (Zoom / 2 < 0.125)
             {
                 return;
             }
@@ -665,6 +673,7 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
+            ResetSelectionRect();
             _renderingZoom = true;
             ChangeScrollBar();
             ZoomLabel.Text = $"Zoom: {Zoom}";
@@ -746,9 +755,9 @@ namespace UoFiddler.Controls.UserControls
                 }
             }
 
-            if (Rect != null && Rect.Width > 0 && Rect.Height > 0)
+            if (SelectionRect != null && SelectionRect.Width > 0 && SelectionRect.Height > 0)
             {
-                e.Graphics.FillRectangle(selectionBrush, Rect);
+                e.Graphics.FillRectangle(selectionBrush, SelectionRect);
             }
             if (_rectangles.Count > 0)
             {
@@ -785,6 +794,7 @@ namespace UoFiddler.Controls.UserControls
                     }
                 }
             }
+            ResetSelectionRect();
             pictureBox.Invalidate();
         }
 
@@ -876,6 +886,7 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickInsertMarker(object sender, EventArgs e)
         {
+            ResetSelectionRect(true);
             if (_mapMarkerForm?.IsDisposed == false)
             {
                 return;
@@ -1023,6 +1034,7 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
+            ResetSelectionRect(true);
             ProgressBar.Minimum = 0;
             ProgressBar.Maximum = (_currMap.Width >> 3) * (_currMap.Height >> 3);
             ProgressBar.Step = 1;
@@ -1081,6 +1093,7 @@ namespace UoFiddler.Controls.UserControls
             SetScrollBarValues();
             hScrollBar.Value = (int)Math.Max(0, o.Loc.X - (pictureBox.Right / Zoom / 2));
             vScrollBar.Value = (int)Math.Max(0, o.Loc.Y - (pictureBox.Bottom / Zoom / 2));
+            ResetSelectionRect();
             pictureBox.Invalidate();
         }
 
@@ -1092,6 +1105,7 @@ namespace UoFiddler.Controls.UserControls
             }
 
             OverlayObjectTree.SelectedNode.Remove();
+            ResetSelectionRect();
             pictureBox.Invalidate();
         }
 
@@ -1147,6 +1161,7 @@ namespace UoFiddler.Controls.UserControls
             }
 
             ChangeScrollBar();
+            ResetSelectionRect();
             pictureBox.Invalidate();
         }
 
@@ -1435,8 +1450,61 @@ namespace UoFiddler.Controls.UserControls
             _currMap.importFileFragment(path, Options.OutputPath);
             Cursor.Current = Cursors.Default;
         }
+
+        private void importDiffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = Options.OutputPath;
+                openFileDialog.Filter = "tbtdiff files (*.tbtdiff)|*.tbtdiff";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (!(openFileDialog.ShowDialog() == DialogResult.OK))
+                    return;
+
+                string outputdir = Path.Combine(Options.OutputPath, $"tbtdiff{DateTime.Now.ToString("yyyyMMddHHmmss")}");
+
+                Directory.CreateDirectory(outputdir);
+                ZipFile.ExtractToDirectory(openFileDialog.FileName, outputdir);
+
+                _currMap.Tiles.Patch = new TileMatrixPatch(_currMap.Tiles, _currMapId, outputdir);
+                _currMap.ResetCache();
+
+                Directory.Delete(outputdir, true);
+            }
+
+            pictureBox.Invalidate();
+            MessageBox.Show($"TbtDiff Package Loaded! To make the patch permanent you have to do: Misc > Diff To Map Copy...", "Saved", MessageBoxButtons.OK,
+                MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+        }
+
+        private MapExportDiffForm _showFormMapDiffExport;
+
+        private void exportDiffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_showFormMapDiffExport?.IsDisposed == false)
+            {
+                return;
+            }
+
+            _showFormMapDiffExport = new MapExportDiffForm(_currMap, _xStart, _yStart, _xEnd, _yEnd)
+            {
+                TopMost = true
+            };
+            _showFormMapDiffExport.Show();
+        }
+
+        private void OnClickAddSelectedToRectList(object sender, EventArgs e)
+        {
+            _regionInfoes.Add(new RegionRectangleInfo() { StartX = _xStart, EndX = _xEnd, StartY = _yStart, EndY = _yEnd });
+        }
+
+        private void clearRegionAreasListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _regionInfoes.Clear();
+        }
     }
-        
 
     public class OverlayObject
     {

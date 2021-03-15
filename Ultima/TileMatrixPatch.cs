@@ -97,7 +97,7 @@ namespace Ultima
             return GetStaticBlock(x >> 3, y >> 3)[x & 0x7][y & 0x7];
         }
 
-        public TileMatrixPatch(TileMatrix matrix, int index, string path)
+        public TileMatrixPatch(TileMatrix matrix, int index, string path, bool isFirstLoad = false)//Cuzzo: Aggiunto parametro isFirstLoad per segnalare il primo caricamento e non applicare le Patch in questo caso.
         {
             _blockWidth = matrix.BlockWidth;
             _blockHeight = matrix.BlockWidth;
@@ -123,11 +123,16 @@ namespace Ultima
                     mapIndexPath = null;
                 }
             }
+            if (isFirstLoad) //Cuzzo: Non applicare le patch automaticamente, ma solo per gestione dei file *.tbtdiff
+            {
+                mapDataPath = null;
+                mapIndexPath = null;
+            }
 
             if (mapDataPath != null && mapIndexPath != null)
             {
                 LandBlocks = new Tile[matrix.BlockWidth][][];
-                //LandBlocksCount = PatchLand(matrix, mapDataPath, mapIndexPath);
+                LandBlocksCount = PatchLand(matrix, mapDataPath, mapIndexPath);
             }
 
             string staDataPath, staIndexPath, staLookupPath;
@@ -158,13 +163,20 @@ namespace Ultima
                 }
             }
 
+            if (isFirstLoad)//Cuzzo: Non applicare le patch automaticamente, ma solo per gestione dei file *.tbtdiff
+            {
+                staDataPath = null;
+                staIndexPath = null;
+                staLookupPath = null;
+            }
+
             if (staDataPath == null || staIndexPath == null || staLookupPath == null)
             {
                 return;
             }
 
             StaticBlocks = new HuedTile[matrix.BlockWidth][][][][];
-            //StaticBlocksCount = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
+            StaticBlocksCount = PatchStatics(matrix, staDataPath, staIndexPath, staLookupPath);
         }
 
         private int PatchLand(TileMatrix matrix, string dataPath, string indexPath)

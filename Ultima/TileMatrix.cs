@@ -36,7 +36,7 @@ namespace Ultima
 
         public bool StaticIndexInit;
 
-        public TileMatrixPatch Patch { get; }
+        public TileMatrixPatch Patch { get; set; }//cuzzo: Aggiunto set per gestione dei file *.tbtdiff.
 
         public int BlockWidth { get; }
 
@@ -138,7 +138,7 @@ namespace Ultima
             _landTiles = new Tile[BlockWidth][][];
             _staticTiles = new HuedTile[BlockWidth][][][][];
 
-            Patch = new TileMatrixPatch(this, mapId, path);
+            Patch = new TileMatrixPatch(this, mapId, path, true);//Cuzzo: Aggiunto parametro per segnalare il primo caricamento e non applicare le Patch in questo caso.
         }
 
         // TODO: unused?
