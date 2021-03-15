@@ -117,6 +117,7 @@ namespace UoFiddler.Controls.UserControls
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
+            this.exportRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -585,6 +586,8 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripSeparator8,
             this.exportMapToolStripMenuItem,
             this.importVezFragmentToolStripMenuItem});
+            this.importMapFragmentToolStripMenuItem,
+            this.exportRegionToolStripMenuItem});
             this.toolStripDropDownButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton3.Name = "toolStripDropDownButton3";
             this.toolStripDropDownButton3.Size = new System.Drawing.Size(45, 22);
@@ -745,6 +748,13 @@ namespace UoFiddler.Controls.UserControls
             this.collapsibleSplitter1.UseAnimations = false;
             this.collapsibleSplitter1.VisualStyle = UoFiddler.Controls.UserControls.VisualStyles.DoubleDots;
             // 
+            // exportRegionToolStripMenuItem
+            // 
+            this.exportRegionToolStripMenuItem.Name = "exportRegionToolStripMenuItem";
+            this.exportRegionToolStripMenuItem.Size = new System.Drawing.Size(308, 22);
+            this.exportRegionToolStripMenuItem.Text = "Export Region...";
+            this.exportRegionToolStripMenuItem.Click += new System.EventHandler(this.ExportRegionClick);
+            // 
             // MapControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -851,5 +861,6 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripMenuItem importMapFragmentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importVezFragmentToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem exportRegionToolStripMenuItem;
     }
 }
