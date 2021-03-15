@@ -433,7 +433,6 @@ namespace UoFiddler.Controls.UserControls
                 _xEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
                 _yEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
 
-
                 _xStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
                 _yStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
                 SelectedAreaLabel.Text = $"Selected Area: ({_xStart},{_yStart}) - ({_xEnd},{_yEnd})";
@@ -463,7 +462,6 @@ namespace UoFiddler.Controls.UserControls
 
                 int tempXEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
                 int tempYEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
-
 
                 int tempXStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
                 int tempYStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
@@ -759,7 +757,7 @@ namespace UoFiddler.Controls.UserControls
             {
                 e.Graphics.FillRectangle(selectionBrush, SelectionRect);
             }
-            if (_rectangles.Count > 0)
+            if (_rectangles.Count > 0 && ShowRectanglesMenuItem.Checked)
             {
                 foreach (var rect in _rectangles)
                 {
@@ -1441,7 +1439,6 @@ namespace UoFiddler.Controls.UserControls
                 {
                     return;
                 }
-
             }
             dialog.Dispose();
             string path = dialog.FileName;
@@ -1498,11 +1495,19 @@ namespace UoFiddler.Controls.UserControls
         private void OnClickAddSelectedToRectList(object sender, EventArgs e)
         {
             _regionInfoes.Add(new RegionRectangleInfo() { StartX = _xStart, EndX = _xEnd, StartY = _yStart, EndY = _yEnd });
+            _rectangles.Add(SelectionRect);
         }
 
-        private void clearRegionAreasListToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ClearRegionAreas_Click(object sender, EventArgs e)
         {
             _regionInfoes.Clear();
+            _rectangles.Clear();
+            Invalidate();
+        }
+
+        private void ShowRectanglesMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowRectanglesMenuItem.Checked = !ShowRectanglesMenuItem.Checked;
         }
     }
 
