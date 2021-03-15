@@ -80,6 +80,7 @@ namespace UoFiddler.Controls.UserControls
             this.showCenterCrossToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showClientCrossToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowRectanglesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.PreloadMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripDropDownButton3 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -127,9 +128,9 @@ namespace UoFiddler.Controls.UserControls
             this.gotoClientLocToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.sendClientToCenterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.statusStrip.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -226,6 +227,7 @@ namespace UoFiddler.Controls.UserControls
             // 
             // TextBoxGoto
             // 
+            this.TextBoxGoto.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.TextBoxGoto.Name = "TextBoxGoto";
             this.TextBoxGoto.Size = new System.Drawing.Size(100, 23);
             this.TextBoxGoto.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownGoto);
@@ -411,7 +413,8 @@ namespace UoFiddler.Controls.UserControls
             this.showStaticsToolStripMenuItem1,
             this.showCenterCrossToolStripMenuItem1,
             this.showMarkersToolStripMenuItem,
-            this.showClientCrossToolStripMenuItem});
+            this.showClientCrossToolStripMenuItem,
+            this.ShowRectanglesMenuItem});
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
             this.toolStripDropDownButton1.Size = new System.Drawing.Size(45, 24);
@@ -424,7 +427,7 @@ namespace UoFiddler.Controls.UserControls
             this.showStaticsToolStripMenuItem1.CheckOnClick = true;
             this.showStaticsToolStripMenuItem1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showStaticsToolStripMenuItem1.Name = "showStaticsToolStripMenuItem1";
-            this.showStaticsToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.showStaticsToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
             this.showStaticsToolStripMenuItem1.Text = "Show Statics";
             this.showStaticsToolStripMenuItem1.Click += new System.EventHandler(this.OnChangeView);
             // 
@@ -434,7 +437,7 @@ namespace UoFiddler.Controls.UserControls
             this.showCenterCrossToolStripMenuItem1.CheckOnClick = true;
             this.showCenterCrossToolStripMenuItem1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showCenterCrossToolStripMenuItem1.Name = "showCenterCrossToolStripMenuItem1";
-            this.showCenterCrossToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.showCenterCrossToolStripMenuItem1.Size = new System.Drawing.Size(173, 22);
             this.showCenterCrossToolStripMenuItem1.Text = "Show Center Cross";
             this.showCenterCrossToolStripMenuItem1.Click += new System.EventHandler(this.OnChangeView);
             // 
@@ -444,7 +447,7 @@ namespace UoFiddler.Controls.UserControls
             this.showMarkersToolStripMenuItem.CheckOnClick = true;
             this.showMarkersToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showMarkersToolStripMenuItem.Name = "showMarkersToolStripMenuItem";
-            this.showMarkersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showMarkersToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.showMarkersToolStripMenuItem.Text = "Show Markers";
             this.showMarkersToolStripMenuItem.Click += new System.EventHandler(this.OnChangeView);
             // 
@@ -454,8 +457,15 @@ namespace UoFiddler.Controls.UserControls
             this.showClientCrossToolStripMenuItem.CheckOnClick = true;
             this.showClientCrossToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showClientCrossToolStripMenuItem.Name = "showClientCrossToolStripMenuItem";
-            this.showClientCrossToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showClientCrossToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.showClientCrossToolStripMenuItem.Text = "Show Client Cross";
+            // 
+            // ShowRectanglesMenuItem
+            // 
+            this.ShowRectanglesMenuItem.Name = "ShowRectanglesMenuItem";
+            this.ShowRectanglesMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.ShowRectanglesMenuItem.Text = "Show Rectangles";
+            this.ShowRectanglesMenuItem.Click += new System.EventHandler(this.ShowRectanglesMenuItem_Click);
             // 
             // ProgressBar
             // 
@@ -757,7 +767,7 @@ namespace UoFiddler.Controls.UserControls
             this.clearRegionAreasListToolStripMenuItem.Name = "clearRegionAreasListToolStripMenuItem";
             this.clearRegionAreasListToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.clearRegionAreasListToolStripMenuItem.Text = "Clear Rect List";
-            this.clearRegionAreasListToolStripMenuItem.Click += new System.EventHandler(this.clearRegionAreasListToolStripMenuItem_Click);
+            this.clearRegionAreasListToolStripMenuItem.Click += new System.EventHandler(this.ClearRegionAreas_Click);
             // 
             // toolStripSeparator2
             // 
@@ -817,22 +827,6 @@ namespace UoFiddler.Controls.UserControls
             this.sendClientToCenterToolStripMenuItem.Text = "Send Client to Center";
             this.sendClientToCenterToolStripMenuItem.Click += new System.EventHandler(this.OnClickSendClient);
             // 
-            // pictureBox
-            // 
-            this.pictureBox.ContextMenuStrip = this.contextMenuStrip1;
-            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox.Location = new System.Drawing.Point(0, 35);
-            this.pictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(398, 244);
-            this.pictureBox.TabIndex = 1;
-            this.pictureBox.TabStop = false;
-            this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
-            this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnMouseDown);
-            this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
-            this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
-            this.pictureBox.Resize += new System.EventHandler(this.OnResizeMap);
-            // 
             // collapsibleSplitter2
             // 
             this.collapsibleSplitter2.AnimationDelay = 20;
@@ -864,6 +858,22 @@ namespace UoFiddler.Controls.UserControls
             this.toolTip1.SetToolTip(this.collapsibleSplitter1, "Click To Show/Hide Toolbar");
             this.collapsibleSplitter1.UseAnimations = false;
             this.collapsibleSplitter1.VisualStyle = UoFiddler.Controls.UserControls.VisualStyles.DoubleDots;
+            // 
+            // pictureBox
+            // 
+            this.pictureBox.ContextMenuStrip = this.contextMenuStrip1;
+            this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox.Location = new System.Drawing.Point(0, 35);
+            this.pictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(398, 244);
+            this.pictureBox.TabIndex = 1;
+            this.pictureBox.TabStop = false;
+            this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.OnPaint);
+            this.pictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnMouseDown);
+            this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
+            this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
+            this.pictureBox.Resize += new System.EventHandler(this.OnResizeMap);
             // 
             // MapControl
             // 
@@ -982,5 +992,6 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exportAreasListToRegionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem ShowRectanglesMenuItem;
     }
 }
