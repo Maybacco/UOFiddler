@@ -924,9 +924,9 @@ namespace Ultima
             }
         }
 
-        public void ExportMapFragment(string path, int startX, int startY, int endX, int endY)
+        public void ExportMapFragment(string path, int startX, int startY, int endX, int endY, string filename, bool land, bool stx)
         {
-            path = Path.Combine(path, $"mapFragment-{_mapId}.json");
+            path = Path.Combine(path, $"{filename}.json");
 
             int startXChunk = startX >> 3;
             int startYChunk = startY >> 3;
@@ -946,8 +946,14 @@ namespace Ultima
                     {
                         tilemap.Add(new TileMap() { Id = t.Id, Z = t.Z });
                     }
-                    landTiles.Add(new LandTileChunk() { X = x, Y = y, L = tilemap });
-                    staticTiles.Add(new StaticsTileChunk() { X = x, Y = y, L = Tiles.GetStaticBlock(x, y) });
+                    if(land)
+                    {
+                        landTiles.Add(new LandTileChunk() { X = x, Y = y, L = tilemap });
+                    }
+                    if(stx)
+                    {
+                        staticTiles.Add(new StaticsTileChunk() { X = x, Y = y, L = Tiles.GetStaticBlock(x, y) });
+                    }
                 }
             }
 

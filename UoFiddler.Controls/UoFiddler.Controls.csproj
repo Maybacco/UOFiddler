@@ -41,6 +41,9 @@
 		<Compile Update="Forms\MapDiffInsertForm - Copia.Designer.cs">
 		  <DependentUpon>MapDiffInsertForm.cs</DependentUpon>
 		</Compile>
+		<Compile Update="Forms\MapExportJsonForm.cs">
+		  <SubType>Form</SubType>
+		</Compile>
 		<Compile Update="Forms\RegionExporterForm.cs">
 		  <SubType>Form</SubType>
 		</Compile>

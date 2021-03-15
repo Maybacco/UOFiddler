@@ -1184,15 +1184,6 @@ namespace UoFiddler.Controls.UserControls
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
         }
 
-        private void ExportMapOnClick(object sender, EventArgs e)
-        {
-            Cursor.Current = Cursors.WaitCursor;
-            _currMap.ExportMapFragment(Options.OutputPath, _xStart, _yStart, _xEnd, _yEnd);
-            Cursor.Current = Cursors.Default;
-            MessageBox.Show($"Report saved to {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
-                MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-        }
-
         private void OnClickReportInvalidMapIDs(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
@@ -1493,6 +1484,22 @@ namespace UoFiddler.Controls.UserControls
                 TopMost = true
             };
             _showFormMapDiffExport.Show();
+        }
+
+        private MapExportJsonForm _showFormMapJsonExport;
+
+        private void exportJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_showFormMapJsonExport?.IsDisposed == false)
+            {
+                return;
+            }
+
+            _showFormMapJsonExport = new MapExportJsonForm(_currMap, _xStart, _yStart, _xEnd, _yEnd)
+            {
+                TopMost = true
+            };
+            _showFormMapJsonExport.Show();
         }
 
         private void OnClickAddSelectedToRectList(object sender, EventArgs e)
