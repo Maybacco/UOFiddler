@@ -138,7 +138,7 @@ namespace Ultima
             _landTiles = new Tile[BlockWidth][][];
             _staticTiles = new HuedTile[BlockWidth][][][][];
 
-            Patch = new TileMatrixPatch(this, mapId, path, true);//Cuzzo: Aggiunto parametro per segnalare il primo caricamento e non applicare le Patch in questo caso.
+            Patch = new TileMatrixPatch(this, mapId, path); //Cuzzo: Aggiunto parametro per segnalare il primo caricamento e non applicare le Patch in questo caso.
         }
 
         // TODO: unused?
