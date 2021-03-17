@@ -15,16 +15,16 @@ namespace UoFiddler.Controls.Forms
             InitializeComponent();
             Icon = Options.GetFiddlerIcon();
             _workingMap = currentMap;
-            numericUpDownX1.Maximum = _workingMap.Width;
+            numericUpDownX1.Maximum = _workingMap.Width-1;
             numericUpDownX1.Value = xStart;
 
-            numericUpDownX2.Maximum = _workingMap.Width;
+            numericUpDownX2.Maximum = _workingMap.Width-1;
             numericUpDownX2.Value = xEnd;
 
-            numericUpDownY1.Maximum = _workingMap.Height;
+            numericUpDownY1.Maximum = _workingMap.Height-1;
             numericUpDownY1.Value = yStart;
 
-            numericUpDownY2.Maximum = _workingMap.Height;
+            numericUpDownY2.Maximum = _workingMap.Height-1;
             numericUpDownY2.Value = yEnd;
         }
 
@@ -63,6 +63,14 @@ namespace UoFiddler.Controls.Forms
         bool IsValidPathBeta(String path)
         {
             return path.IndexOfAny(Path.GetInvalidFileNameChars()) == -1;
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button2_Click(this, new EventArgs());
+            }
         }
     }
 }

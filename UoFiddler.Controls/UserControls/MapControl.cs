@@ -379,6 +379,7 @@ namespace UoFiddler.Controls.UserControls
         private List<Rectangle> _rectangles = new List<Rectangle>();
         private List<RegionRectangleInfo> _regionInfoes = new List<RegionRectangleInfo>();
         private Brush selectionBrush = new SolidBrush(Color.FromArgb(128, 72, 145, 220));
+        private Brush regionBrush = new SolidBrush(Color.FromArgb(128, 220, 145, 72));
 
         public void ResetSelectionRect(bool invalidate = false)
         {
@@ -430,11 +431,11 @@ namespace UoFiddler.Controls.UserControls
 
             if (_isSelecting)
             {
-                _xEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
-                _yEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
+                _xEnd = Math.Min(_currMap.Width-1, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
+                _yEnd = Math.Min(_currMap.Height-1, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
 
-                _xStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
-                _yStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
+                _xStart = Math.Min(_currMap.Width-1, Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value)));
+                _yStart = Math.Min(_currMap.Height-1, Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value)));
                 SelectedAreaLabel.Text = $"Selected Area: ({_xStart},{_yStart}) - ({_xEnd},{_yEnd})";
             }
             _isSelecting = false;
@@ -460,11 +461,11 @@ namespace UoFiddler.Controls.UserControls
                     Math.Abs(RectStartPoint.X - Math.Max(0, tempEndPoint.X)),
                     Math.Abs(RectStartPoint.Y - Math.Max(0, tempEndPoint.Y)));
 
-                int tempXEnd = Math.Min(_currMap.Width, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
-                int tempYEnd = Math.Min(_currMap.Height, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
+                int tempXEnd = Math.Min(_currMap.Width-1, (int)(SelectionRect.Right / Zoom) + Round(hScrollBar.Value));
+                int tempYEnd = Math.Min(_currMap.Height-1, (int)(SelectionRect.Bottom / Zoom) + Round(vScrollBar.Value));
 
-                int tempXStart = Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value));
-                int tempYStart = Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value));
+                int tempXStart = Math.Min(_currMap.Width-1, Math.Max(0, (int)(SelectionRect.X / Zoom) + Round(hScrollBar.Value)));
+                int tempYStart = Math.Min(_currMap.Height-1, Math.Max(0, (int)(SelectionRect.Y / Zoom) + Round(vScrollBar.Value)));
                 SelectedAreaLabel.Text = $"Selected Area: ({tempXStart},{tempYStart}) - ({tempXEnd},{tempYEnd})";
                 pictureBox.Invalidate();
             }
@@ -761,7 +762,7 @@ namespace UoFiddler.Controls.UserControls
             {
                 foreach (var rect in _rectangles)
                 {
-                    e.Graphics.FillRectangle(selectionBrush, rect);
+                    e.Graphics.FillRectangle(regionBrush, rect);
                 }
             }
         }
@@ -1391,31 +1392,12 @@ namespace UoFiddler.Controls.UserControls
             _showMapReplaceTilesForm.Show();
         }
 
-        /*private void ImportMapFragmentClick(object sender, EventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog
-            {
-                Multiselect = false,
-                Title = "Choose json file to open",
-                CheckFileExists = true,
-                Filter = "json files (*.json)|*.json"
-            };
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                if (!File.Exists(dialog.FileName))
-                {
-                    return;
-                }
-            }
-            dialog.Dispose();
-        }*/
-
-        private void ExportRegionClick(object sender, EventArgs e)
+        private void OnClickRegionExport(object sender, EventArgs e)
         {
             new RegionExporterForm(_regionInfoes).Show();
         }
 
-        private void importFragmentToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnClickImportJson(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog
             {
@@ -1439,10 +1421,14 @@ namespace UoFiddler.Controls.UserControls
             Cursor.Current = Cursors.Default;
         }
 
-        private void importDiffToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnClickImportDiff(object sender, EventArgs e)
         {
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                openFileDialog.Multiselect = false;
+                openFileDialog.Title = "Choose tbtdiff file to open";
+                openFileDialog.CheckFileExists = true;
                 openFileDialog.InitialDirectory = Options.OutputPath;
                 openFileDialog.Filter = "tbtdiff files (*.tbtdiff)|*.tbtdiff";
                 openFileDialog.FilterIndex = 1;
@@ -1451,25 +1437,236 @@ namespace UoFiddler.Controls.UserControls
                 if (!(openFileDialog.ShowDialog() == DialogResult.OK))
                     return;
 
-                string outputdir = Path.Combine(Options.OutputPath, $"tbtdiff{DateTime.Now.ToString("yyyyMMddHHmmss")}");
+                string diff = openFileDialog.FileName;
+                string mapPath = Files.GetFilePath($"map{_currMapId}.mul");
 
-                Directory.CreateDirectory(outputdir);
-                ZipFile.ExtractToDirectory(openFileDialog.FileName, outputdir);
+                BinaryReader mapReader;
 
-                _currMap.Tiles.Patch = new TileMatrixPatch(_currMap.Tiles, _currMapId, outputdir);
-                _currMap.ResetCache();
+                if (mapPath != null)
+                {
+                    FileStream mMap = new FileStream(mapPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    mapReader = new BinaryReader(mMap);
+                }
+                else
+                {
+                    MessageBox.Show("Map file not found!", "Map Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
+                            MessageBoxDefaultButton.Button1);
+                    return;
+                }
 
-                Directory.Delete(outputdir, true);
+                string indexPath = Files.GetFilePath($"staidx{_currMapId}.mul");
+                BinaryReader indexReader;
+
+                if (indexPath != null)
+                {
+                    FileStream mIndex = new FileStream(indexPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    indexReader = new BinaryReader(mIndex);
+                }
+                else
+                {
+                    MessageBox.Show("Statics file not found!", "Statics Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
+
+                string staticsPath = Files.GetFilePath($"statics{_currMapId}.mul");
+                BinaryReader staticsReader;
+                FileStream mStatics;
+
+                if (staticsPath != null)
+                {
+                    mStatics = new FileStream(staticsPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    staticsReader = new BinaryReader(mStatics);
+                }
+                else
+                {
+                    MessageBox.Show("Statics file not found!", "Statics Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    return;
+                }
+
+                int blockWidth = _currMap.Tiles.BlockWidth;
+                int blockHeight = _currMap.Tiles.BlockHeight;
+                
+                string mapMul = Path.Combine(Options.OutputPath, $"map{_currMapId}.mul");
+                string staIdx = Path.Combine(Options.OutputPath, $"staidx{_currMapId}.mul");
+                string staMul = Path.Combine(Options.OutputPath, $"statics{_currMapId}.mul");
+
+
+                using (FileStream fsDiff = new FileStream(diff, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (BinaryReader diffReader = new BinaryReader(fsDiff))
+                {
+                    int diffBlockWidth = diffReader.ReadInt32();
+                    int diffBlockHeight = diffReader.ReadInt32();
+
+                    if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+                    {
+                        MessageBox.Show("Size missmatch!", "Size Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                        return;
+                    }
+
+                    byte mode = diffReader.ReadByte();
+                    if ((mode & 1) == 1)
+                    {
+                        using (FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write))
+                        using (BinaryWriter binMapMul = new BinaryWriter(fsMapMul))
+                        {
+                            for (int x = 0; x < blockWidth; x++)
+                            {
+                                for (int y = 0; y < blockHeight; y++)
+                                {
+                                    int currBlockDiff = diffReader.ReadInt32();
+                                    int currBlock = (x * blockHeight) + y;
+
+                                    mapReader.BaseStream.Seek(currBlock * 196, SeekOrigin.Begin);
+
+                                    int header = mapReader.ReadInt32();
+                                    binMapMul.Write(header);
+
+                                    if (currBlockDiff == currBlock)
+                                    {
+                                        for (int i = 0; i < 64; i++)
+                                        {
+                                            ushort tileId = diffReader.ReadUInt16();
+                                            sbyte z = diffReader.ReadSByte();
+
+                                            binMapMul.Write(tileId);
+                                            binMapMul.Write(z);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < 64; ++i)
+                                        {
+                                            ushort tileId = mapReader.ReadUInt16();
+                                            sbyte z = mapReader.ReadSByte();
+
+                                            binMapMul.Write(tileId);
+                                            binMapMul.Write(z);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if ((mode & 2) == 2)
+                    {
+                        using (FileStream fsStaIdx = new FileStream(staIdx, FileMode.Create, FileAccess.Write, FileShare.Write),
+                                    fsStaMul = new FileStream(staMul, FileMode.Create, FileAccess.Write, FileShare.Write))
+                        using (BinaryWriter binStaIdx = new BinaryWriter(fsStaIdx),
+                                    binStaMul = new BinaryWriter(fsStaMul))
+                        {
+                            int currBlockDiff = diffReader.ReadInt32();
+                            for (int x = 0; x < blockWidth; x++)
+                            {
+                                for (int y = 0; y < blockHeight; y++)
+                                {
+                                    int currBlock = (x * blockHeight) + y;
+
+                                    int fsMulLookup = (int)fsStaMul.Position;
+                                    int extra = 0;
+
+                                    if (currBlockDiff == currBlock)
+                                    {
+                                        for (byte relativeX = 0; relativeX < 8; relativeX++)
+                                        {
+                                            for (byte relativeY = 0; relativeY < 8; relativeY++)
+                                            {
+                                                int itemcount = diffReader.ReadInt32();
+                                                for (int i= 0; i < itemcount; i++)
+                                                {
+                                                    ushort itemID = diffReader.ReadUInt16();
+                                                    sbyte itemZ = diffReader.ReadSByte();
+                                                    ushort itemHue = diffReader.ReadUInt16();
+
+                                                    binStaMul.Write(itemID);
+                                                    binStaMul.Write(relativeX);
+                                                    binStaMul.Write(relativeY);
+                                                    binStaMul.Write(itemZ);
+                                                    binStaMul.Write(itemHue);
+                                                }
+                                            }
+                                        }
+
+                                        int fsMulLength = (int)fsStaMul.Position - fsMulLookup;
+                                        if (fsMulLength > 0)
+                                        {
+                                            binStaIdx.Write(fsMulLookup); //lookup
+                                            binStaIdx.Write(fsMulLength); // length
+                                            binStaIdx.Write(extra); // extra
+                                        }
+                                        else
+                                        {
+                                            binStaIdx.Write(-1); // lookup
+                                            binStaIdx.Write(-1); // length
+                                            binStaIdx.Write(-1); // extra
+                                        }
+                                        currBlockDiff = diffReader.ReadInt32(); //leggo il prossimo
+                                    }
+                                    else
+                                    {
+                                        int lookup, length;
+                                        indexReader.BaseStream.Seek(((x * blockHeight) + y) * 12, SeekOrigin.Begin);
+                                        lookup = indexReader.ReadInt32();
+                                        length = indexReader.ReadInt32();
+                                        extra = indexReader.ReadInt32();
+
+                                        if (lookup < 0 || length <= 0)
+                                        {
+                                            binStaIdx.Write(-1); // lookup
+                                            binStaIdx.Write(-1); // length
+                                            binStaIdx.Write(-1); // extra
+                                        }
+                                        else
+                                        {
+                                            mStatics.Seek(lookup, SeekOrigin.Begin);
+                                            int count = length / 7;
+                                            for (int i = 0; i < count; ++i)
+                                            {
+                                                ushort itemId = staticsReader.ReadUInt16();
+                                                byte itemX = staticsReader.ReadByte();
+                                                byte itemY = staticsReader.ReadByte();
+                                                sbyte itemZ = staticsReader.ReadSByte();
+                                                short itemHue = staticsReader.ReadInt16();
+
+                                                binStaMul.Write(itemId);
+                                                binStaMul.Write(itemX);
+                                                binStaMul.Write(itemY);
+                                                binStaMul.Write(itemZ);
+                                                binStaMul.Write(itemHue);
+                                            }
+
+                                            int fsMulLength = (int)fsStaMul.Position - fsMulLookup;
+                                            if (fsMulLength > 0)
+                                            {
+                                                binStaIdx.Write(fsMulLookup); // lookup
+                                                binStaIdx.Write(fsMulLength); // length
+                                                binStaIdx.Write(extra); // extra
+                                            }
+                                            else
+                                            {
+                                                binStaIdx.Write(-1); // lookup
+                                                binStaIdx.Write(-1); // length
+                                                binStaIdx.Write(-1); // extra
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                mapReader.Close();
+                indexReader.Close();
+                staticsReader.Close();
             }
 
-            pictureBox.Invalidate();
-            MessageBox.Show($"TbtDiff Package Loaded! To make the patch permanent you have to do: Misc > Diff To Map Copy...", "Saved", MessageBoxButtons.OK,
+            MessageBox.Show($"TbtDiff patch successfully loaded! New files saved in: {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
         }
 
         private MapExportDiffForm _showFormMapDiffExport;
 
-        private void exportDiffToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnClickExportDiff(object sender, EventArgs e)
         {
             if (_showFormMapDiffExport?.IsDisposed == false)
             {
@@ -1485,7 +1682,7 @@ namespace UoFiddler.Controls.UserControls
 
         private MapExportJsonForm _showFormMapJsonExport;
 
-        private void exportJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OnClickExportJson(object sender, EventArgs e)
         {
             if (_showFormMapJsonExport?.IsDisposed == false)
             {
@@ -1502,7 +1699,11 @@ namespace UoFiddler.Controls.UserControls
         private void OnClickAddSelectedToRectList(object sender, EventArgs e)
         {
             _regionInfoes.Add(new RegionRectangleInfo() { StartX = _xStart, EndX = _xEnd, StartY = _yStart, EndY = _yEnd });
+            
             _rectangles.Add(SelectionRect);
+
+            if (ShowRectanglesMenuItem.Checked)
+                pictureBox.Invalidate();
         }
 
         private void ClearRegionAreas_Click(object sender, EventArgs e)
@@ -1510,11 +1711,6 @@ namespace UoFiddler.Controls.UserControls
             _regionInfoes.Clear();
             _rectangles.Clear();
             Invalidate();
-        }
-
-        private void ShowRectanglesMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowRectanglesMenuItem.Checked = !ShowRectanglesMenuItem.Checked;
         }
     }
 

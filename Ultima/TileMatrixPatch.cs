@@ -97,7 +97,7 @@ namespace Ultima
             return GetStaticBlock(x >> 3, y >> 3)[x & 0x7][y & 0x7];
         }
 
-        public TileMatrixPatch(TileMatrix matrix, int index, string path, bool isFirstLoad = false)//Cuzzo: Aggiunto parametro isFirstLoad per segnalare il primo caricamento e non applicare le Patch in questo caso.
+        public TileMatrixPatch(TileMatrix matrix, int index, string path)
         {
             _blockWidth = matrix.BlockWidth;
             _blockHeight = matrix.BlockWidth;
@@ -122,11 +122,6 @@ namespace Ultima
                 {
                     mapIndexPath = null;
                 }
-            }
-            if (isFirstLoad) //Cuzzo: Non applicare le patch automaticamente, ma solo per gestione dei file *.tbtdiff
-            {
-                mapDataPath = null;
-                mapIndexPath = null;
             }
 
             if (mapDataPath != null && mapIndexPath != null)
@@ -161,13 +156,6 @@ namespace Ultima
                 {
                     staLookupPath = null;
                 }
-            }
-
-            if (isFirstLoad)//Cuzzo: Non applicare le patch automaticamente, ma solo per gestione dei file *.tbtdiff
-            {
-                staDataPath = null;
-                staIndexPath = null;
-                staLookupPath = null;
             }
 
             if (staDataPath == null || staIndexPath == null || staLookupPath == null)

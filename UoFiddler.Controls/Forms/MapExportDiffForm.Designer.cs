@@ -260,15 +260,16 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(328, 22);
             this.textBox1.TabIndex = 22;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(32, 182);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(133, 17);
+            this.label7.Size = new System.Drawing.Size(135, 17);
             this.label7.TabIndex = 23;
-            this.label7.Text = "Diff Package Name:";
+            this.label7.Text = "TbtDiff Patch Name:";
             // 
             // MapExportDiffForm
             // 
@@ -287,7 +288,7 @@
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(441, 299);
             this.Name = "MapExportDiffForm";
-            this.Text = "Map Export Diff Package";
+            this.Text = "Map Export Diff Patch";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY1)).EndInit();
             this.groupBox1.ResumeLayout(false);

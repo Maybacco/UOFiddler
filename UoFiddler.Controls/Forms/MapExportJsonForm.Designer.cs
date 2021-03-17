@@ -64,9 +64,10 @@
             this.checkBoxMap.AutoSize = true;
             this.checkBoxMap.Checked = true;
             this.checkBoxMap.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMap.Location = new System.Drawing.Point(6, 19);
+            this.checkBoxMap.Location = new System.Drawing.Point(8, 23);
+            this.checkBoxMap.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxMap.Name = "checkBoxMap";
-            this.checkBoxMap.Size = new System.Drawing.Size(80, 17);
+            this.checkBoxMap.Size = new System.Drawing.Size(101, 21);
             this.checkBoxMap.TabIndex = 2;
             this.checkBoxMap.Text = "Export Map";
             this.checkBoxMap.UseVisualStyleBackColor = true;
@@ -76,68 +77,76 @@
             this.checkBoxStatics.AutoSize = true;
             this.checkBoxStatics.Checked = true;
             this.checkBoxStatics.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxStatics.Location = new System.Drawing.Point(8, 19);
+            this.checkBoxStatics.Location = new System.Drawing.Point(11, 23);
+            this.checkBoxStatics.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkBoxStatics.Name = "checkBoxStatics";
-            this.checkBoxStatics.Size = new System.Drawing.Size(91, 17);
+            this.checkBoxStatics.Size = new System.Drawing.Size(116, 21);
             this.checkBoxStatics.TabIndex = 3;
             this.checkBoxStatics.Text = "Export Statics";
             this.checkBoxStatics.UseVisualStyleBackColor = true;
             // 
             // numericUpDownX1
             // 
-            this.numericUpDownX1.Location = new System.Drawing.Point(30, 18);
+            this.numericUpDownX1.Location = new System.Drawing.Point(40, 22);
+            this.numericUpDownX1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numericUpDownX1.Name = "numericUpDownX1";
-            this.numericUpDownX1.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDownX1.Size = new System.Drawing.Size(72, 22);
             this.numericUpDownX1.TabIndex = 4;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 20);
+            this.label1.Location = new System.Drawing.Point(11, 25);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 13);
+            this.label1.Size = new System.Drawing.Size(21, 17);
             this.label1.TabIndex = 5;
             this.label1.Text = "X:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(93, 20);
+            this.label2.Location = new System.Drawing.Point(124, 25);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(17, 13);
+            this.label2.Size = new System.Drawing.Size(21, 17);
             this.label2.TabIndex = 7;
             this.label2.Text = "Y:";
             // 
             // numericUpDownY1
             // 
-            this.numericUpDownY1.Location = new System.Drawing.Point(115, 18);
+            this.numericUpDownY1.Location = new System.Drawing.Point(153, 22);
+            this.numericUpDownY1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numericUpDownY1.Name = "numericUpDownY1";
-            this.numericUpDownY1.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDownY1.Size = new System.Drawing.Size(72, 22);
             this.numericUpDownY1.TabIndex = 6;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(165, 21);
+            this.label3.Location = new System.Drawing.Point(220, 26);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(20, 13);
+            this.label3.Size = new System.Drawing.Size(25, 17);
             this.label3.TabIndex = 9;
             this.label3.Text = "X2";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(165, 49);
+            this.label4.Location = new System.Drawing.Point(220, 60);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(20, 13);
+            this.label4.Size = new System.Drawing.Size(25, 17);
             this.label4.TabIndex = 11;
             this.label4.Text = "Y2";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(10, 171);
+            this.button2.Location = new System.Drawing.Point(13, 210);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(368, 23);
+            this.button2.Size = new System.Drawing.Size(491, 28);
             this.button2.TabIndex = 12;
             this.button2.Text = "Export";
             this.button2.UseVisualStyleBackColor = true;
@@ -146,9 +155,11 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.checkBoxMap);
-            this.groupBox1.Location = new System.Drawing.Point(10, 11);
+            this.groupBox1.Location = new System.Drawing.Point(13, 14);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(180, 45);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(240, 55);
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map";
@@ -156,9 +167,11 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.checkBoxStatics);
-            this.groupBox2.Location = new System.Drawing.Point(194, 11);
+            this.groupBox2.Location = new System.Drawing.Point(259, 14);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(182, 45);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Size = new System.Drawing.Size(243, 55);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Statics";
@@ -169,9 +182,11 @@
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(10, 62);
+            this.groupBox3.Location = new System.Drawing.Point(13, 76);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(367, 74);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Size = new System.Drawing.Size(489, 91);
             this.groupBox3.TabIndex = 21;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Region";
@@ -182,44 +197,48 @@
             this.groupBox5.Controls.Add(this.label5);
             this.groupBox5.Controls.Add(this.numericUpDownY2);
             this.groupBox5.Controls.Add(this.label6);
-            this.groupBox5.Location = new System.Drawing.Point(184, 18);
-            this.groupBox5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox5.Location = new System.Drawing.Point(245, 22);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox5.Size = new System.Drawing.Size(174, 44);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox5.Size = new System.Drawing.Size(232, 54);
             this.groupBox5.TabIndex = 13;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Ending Point";
             // 
             // numericUpDownX2
             // 
-            this.numericUpDownX2.Location = new System.Drawing.Point(30, 18);
+            this.numericUpDownX2.Location = new System.Drawing.Point(40, 22);
+            this.numericUpDownX2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numericUpDownX2.Name = "numericUpDownX2";
-            this.numericUpDownX2.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDownX2.Size = new System.Drawing.Size(72, 22);
             this.numericUpDownX2.TabIndex = 4;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(93, 20);
+            this.label5.Location = new System.Drawing.Point(124, 25);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(17, 13);
+            this.label5.Size = new System.Drawing.Size(21, 17);
             this.label5.TabIndex = 7;
             this.label5.Text = "Y:";
             // 
             // numericUpDownY2
             // 
-            this.numericUpDownY2.Location = new System.Drawing.Point(115, 18);
+            this.numericUpDownY2.Location = new System.Drawing.Point(153, 22);
+            this.numericUpDownY2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.numericUpDownY2.Name = "numericUpDownY2";
-            this.numericUpDownY2.Size = new System.Drawing.Size(54, 20);
+            this.numericUpDownY2.Size = new System.Drawing.Size(72, 22);
             this.numericUpDownY2.TabIndex = 6;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(8, 20);
+            this.label6.Location = new System.Drawing.Point(11, 25);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(17, 13);
+            this.label6.Size = new System.Drawing.Size(21, 17);
             this.label6.TabIndex = 5;
             this.label6.Text = "X:";
             // 
@@ -229,39 +248,39 @@
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.numericUpDownY1);
             this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Location = new System.Drawing.Point(6, 18);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox4.Location = new System.Drawing.Point(8, 22);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.groupBox4.Size = new System.Drawing.Size(174, 44);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox4.Size = new System.Drawing.Size(232, 54);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Starting Point";
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(130, 145);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBox1.Location = new System.Drawing.Point(173, 178);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox1.MaxLength = 32;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(247, 20);
+            this.textBox1.Size = new System.Drawing.Size(328, 22);
             this.textBox1.TabIndex = 22;
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(24, 148);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Location = new System.Drawing.Point(32, 182);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(94, 13);
+            this.label7.Size = new System.Drawing.Size(123, 17);
             this.label7.TabIndex = 23;
             this.label7.Text = "Json Patch Name:";
             // 
             // MapExportJsonForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(388, 211);
+            this.ClientSize = new System.Drawing.Size(517, 260);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.groupBox3);
@@ -270,8 +289,9 @@
             this.Controls.Add(this.button2);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(335, 250);
+            this.MinimumSize = new System.Drawing.Size(441, 297);
             this.Name = "MapExportJsonForm";
             this.Text = "Map Export Json Patch";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX1)).EndInit();

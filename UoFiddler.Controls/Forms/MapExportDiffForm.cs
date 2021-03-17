@@ -15,16 +15,16 @@ namespace UoFiddler.Controls.Forms
             InitializeComponent();
             Icon = Options.GetFiddlerIcon();
             _workingMap = currentMap;
-            numericUpDownX1.Maximum = _workingMap.Width;
+            numericUpDownX1.Maximum = _workingMap.Width-1;
             numericUpDownX1.Value = xStart;
 
-            numericUpDownX2.Maximum = _workingMap.Width;
+            numericUpDownX2.Maximum = _workingMap.Width-1;
             numericUpDownX2.Value = xEnd;
 
-            numericUpDownY1.Maximum = _workingMap.Height;
+            numericUpDownY1.Maximum = _workingMap.Height-1;
             numericUpDownY1.Value = yStart;
 
-            numericUpDownY2.Maximum = _workingMap.Height;
+            numericUpDownY2.Maximum = _workingMap.Height-1;
             numericUpDownY2.Value = yEnd;
         }
 
@@ -37,111 +37,87 @@ namespace UoFiddler.Controls.Forms
                 return;
             }
 
-            string tempPath = Path.Combine(Options.OutputPath, $"{filename}{DateTime.Now.ToString("yyyyMMddHHmmss")}");
+            //string tempPath = Path.Combine(Options.OutputPath, $"{filename}{DateTime.Now.ToString("yyyyMMddHHmmss")}");
 
-            string zipPath = Path.Combine(Options.OutputPath, $"{filename}.tbtdiff");
-            if (File.Exists(zipPath))
+            string outputPath = Path.Combine(Options.OutputPath, $"{filename}.tbtdiff");
+            if (File.Exists(outputPath))
             {
                 MessageBox.Show("Diff Package already exists! You have to change the name of the file to export!", "Name Error", MessageBoxButtons.OK, MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1);
                 return;
             }
 
-            Directory.CreateDirectory(tempPath);
+            //Directory.CreateDirectory(tempPath);
 
-            int chunkXStart = xStart >> 3;
-            int chunkXEnd = xEnd >> 3;
-            int chunkYStart = yStart >> 3;
-            int chunkYEnd = yEnd >> 3;
+            int blockXStart = xStart >> 3;
+            int blockXEnd = xEnd >> 3;
+            int blockYStart = yStart >> 3;
+            int blockYEnd = yEnd >> 3;
 
-            if (checkBoxMap.Checked)
+            byte mode = (byte)(Convert.ToByte(checkBoxMap.Checked) + Convert.ToByte(checkBoxStatics.Checked)*2);
+            //1 = Map only
+            //2 = Statics only
+            //3 = Bot Map and Statics
+
+            string diff = Path.Combine(Options.OutputPath, $"{filename}.tbtdiff");
+            using (FileStream fsDiff = new FileStream(diff, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (BinaryWriter binDiff = new BinaryWriter(fsDiff))
             {
-                string mapIdx = Path.Combine(tempPath, $"mapdifl{_workingMap.FileIndex}.mul");
-                FileStream fsMapIdx = new FileStream(mapIdx, FileMode.Create, FileAccess.Write, FileShare.Write);
-                BinaryWriter binMapIdx = new BinaryWriter(fsMapIdx);
+                int blockWidth = _workingMap.Tiles.BlockWidth;
+                int blockHeight = _workingMap.Tiles.BlockHeight;
+                binDiff.Write(blockWidth);
+                binDiff.Write(blockHeight);
 
-                string mapMul = Path.Combine(tempPath, $"mapdif{_workingMap.FileIndex}.mul");
-                FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write);
-                BinaryWriter binMapMul = new BinaryWriter(fsMapMul);
-
-                for (int chunkY = chunkYStart; chunkY <= chunkYEnd; chunkY++)
+                binDiff.Write(mode);
+                if ((mode & 1) == 1)
                 {
-                    for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++)
+                    for (int blockX = blockXStart; blockX <= blockXEnd; blockX++)
                     {
-                        int blockId = chunkX * _workingMap.Tiles.BlockHeight + chunkY;
-                        binMapIdx.Write(blockId);
-
-                        fsMapMul.Seek(4, SeekOrigin.Current);
-
-                        Tile[] mapBlock = _workingMap.Tiles.GetLandBlock(chunkX, chunkY);
-                        foreach (Tile tile in mapBlock)
+                        for (int blockY = blockYStart; blockY <= blockYEnd; blockY++)
                         {
-                            binMapMul.Write(tile.Id);
-                            binMapMul.Write(tile.Z);
+                            int block = blockX * _workingMap.Tiles.BlockHeight + blockY;
+                            binDiff.Write(block);
+
+                            Tile[] mapBlock = _workingMap.Tiles.GetLandBlock(blockX, blockY);
+                            foreach (Tile tile in mapBlock)
+                            {
+                                binDiff.Write(tile.Id);
+                                binDiff.Write(tile.Z);
+                            }
                         }
                     }
                 }
-                fsMapIdx.Close();
-                fsMapMul.Close();
-            }
-
-            if (checkBoxStatics.Checked)
-            {
-                string staIdx = Path.Combine(tempPath, $"stadifl{_workingMap.FileIndex}.mul");
-                FileStream fsStaIdx = new FileStream(staIdx, FileMode.Create, FileAccess.Write, FileShare.Write);
-                BinaryWriter binStaIdx = new BinaryWriter(fsStaIdx);
-
-                string staLookup = Path.Combine(tempPath, $"stadifi{_workingMap.FileIndex}.mul");
-                FileStream fsStaLookup = new FileStream(staLookup, FileMode.Create, FileAccess.Write, FileShare.Write);
-                BinaryWriter binStaLookup = new BinaryWriter(fsStaLookup);
-
-                string staMul = Path.Combine(tempPath, $"stadif{_workingMap.FileIndex}.mul");
-                FileStream fsStaMul = new FileStream(staMul, FileMode.Create, FileAccess.Write, FileShare.Write);
-                BinaryWriter binStaMul = new BinaryWriter(fsStaMul);
-
-                int offset = 0;
-                for (int chunkY = chunkYStart; chunkY <= chunkYEnd; chunkY++)
+                if ((mode & 2) == 2)
                 {
-                    for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++)
+                    for (int blockX = blockXStart; blockX <= blockXEnd; blockX++)
                     {
-                        int blockId = chunkX * _workingMap.Tiles.BlockHeight + chunkY;
-                        binStaIdx.Write(blockId);
-
-                        fsStaMul.Seek(offset, SeekOrigin.Begin);
-
-                        HuedTile[][][] staBlock = _workingMap.Tiles.GetStaticBlock(chunkX, chunkY);
-
-                        int length = 0;
-                        for (byte y = 0; y < 8; y++)
+                        for (int blockY = blockYStart; blockY <= blockYEnd; blockY++)
                         {
+                            int block = blockX * _workingMap.Tiles.BlockHeight + blockY;
+                            binDiff.Write(block);
+
+                            HuedTile[][][] staBlock = _workingMap.Tiles.GetStaticBlock(blockX, blockY);
+
                             for (byte x = 0; x < 8; x++)
                             {
-                                foreach (HuedTile huedTile in staBlock[x][y])
+                                for (byte y = 0; y < 8; y++)
                                 {
-                                    binStaMul.Write(huedTile.Id);
-                                    binStaMul.Write(x);
-                                    binStaMul.Write(y);
-                                    binStaMul.Write(huedTile.Z);
-                                    binStaMul.Write((short)huedTile.Hue);
-                                    length += 7;
+                                    binDiff.Write(staBlock[x][y].Length);
+                                    foreach (HuedTile huedTile in staBlock[x][y])
+                                    {
+                                        binDiff.Write(huedTile.Id);
+                                        binDiff.Write(huedTile.Z);
+                                        binDiff.Write((short)huedTile.Hue);
+                                    }
                                 }
                             }
                         }
-                        binStaLookup.Write(offset);
-                        binStaLookup.Write(length);
-                        binStaLookup.Write(-1);
-                        offset += length;
                     }
+                    binDiff.Write(-1);
                 }
-                fsStaIdx.Close();
-                fsStaLookup.Close();
-                fsStaMul.Close();
             }
-            
-            ZipFile.CreateFromDirectory(tempPath, zipPath);
-            Directory.Delete(tempPath,true);
-
-            MessageBox.Show($"Diff Package saved at: {zipPath}", "Saved", MessageBoxButtons.OK,
+        
+            MessageBox.Show($"TbtDiff Patch saved at: {outputPath}", "Saved", MessageBoxButtons.OK,
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
 
             Close();
@@ -162,6 +138,14 @@ namespace UoFiddler.Controls.Forms
         bool IsValidPathBeta(String path)
         {
             return path.IndexOfAny(Path.GetInvalidFileNameChars()) == -1;
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button2_Click(this, new EventArgs());
+            }
         }
     }
 }
