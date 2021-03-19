@@ -1712,6 +1712,11 @@ namespace UoFiddler.Controls.UserControls
             _rectangles.Clear();
             Invalidate();
         }
+
+        private void ExportRegionResource_Click(object sender, EventArgs e)
+        {
+            new ExportResourceRegionForm(_xStart, _yStart, _xEnd - _xStart, _yEnd - _yStart).Show();
+        }
     }
 
     public class OverlayObject

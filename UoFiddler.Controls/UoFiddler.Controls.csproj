@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>Controls</AssemblyName>
 		<TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AssemblyTitle>Controls</AssemblyTitle>
 		<Product>Controls</Product>
