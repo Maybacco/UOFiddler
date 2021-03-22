@@ -42,7 +42,7 @@ namespace UoFiddler.Controls.Forms
             Cursor.Current = Cursors.WaitCursor;
             _workingMap.ExportMapFragment(Options.OutputPath, xStart, yStart, xEnd, yEnd, filename, checkBoxMap.Checked, checkBoxStatics.Checked);
             Cursor.Current = Cursors.Default;
-            MessageBox.Show($"Report saved to {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
+            MessageBox.Show($"Map saved to {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
 
             Close();
