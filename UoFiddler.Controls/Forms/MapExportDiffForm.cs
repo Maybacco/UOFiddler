@@ -86,6 +86,7 @@ namespace UoFiddler.Controls.Forms
                             }
                         }
                     }
+                    binDiff.Write(-1);
                 }
                 if ((mode & 2) == 2)
                 {
@@ -107,7 +108,7 @@ namespace UoFiddler.Controls.Forms
                                     {
                                         binDiff.Write(huedTile.Id);
                                         binDiff.Write(huedTile.Z);
-                                        binDiff.Write((short)huedTile.Hue);
+                                        binDiff.Write((ushort)huedTile.Hue);
                                     }
                                 }
                             }
