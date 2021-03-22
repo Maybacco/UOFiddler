@@ -1509,11 +1509,12 @@ namespace UoFiddler.Controls.UserControls
                         using (FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write))
                         using (BinaryWriter binMapMul = new BinaryWriter(fsMapMul))
                         {
+                            int currBlockDiff = diffReader.ReadInt32();
                             for (int x = 0; x < blockWidth; x++)
                             {
                                 for (int y = 0; y < blockHeight; y++)
                                 {
-                                    int currBlockDiff = diffReader.ReadInt32();
+                                    
                                     int currBlock = (x * blockHeight) + y;
 
                                     mapReader.BaseStream.Seek(currBlock * 196, SeekOrigin.Begin);
@@ -1531,6 +1532,7 @@ namespace UoFiddler.Controls.UserControls
                                             binMapMul.Write(tileId);
                                             binMapMul.Write(z);
                                         }
+                                        currBlockDiff = diffReader.ReadInt32();
                                     }
                                     else
                                     {
