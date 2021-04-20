@@ -13,6 +13,7 @@ namespace Ultima
         private static FileIndex _fileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
         private static FileIndex _fileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
         private static FileIndex _fileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+        private static FileIndex _fileIndex6 = new FileIndex("Anim6.idx", "Anim6.mul", 0x40000, -1);
 
         private static byte[] _streamBuffer;
         private static MemoryStream _memoryStream;
@@ -27,6 +28,7 @@ namespace Ultima
             _fileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", 0x20000, -1);
             _fileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", 0x20000, -1);
             _fileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", 0x20000, -1);
+            _fileIndex6 = new FileIndex("Anim6.idx", "Anim6.mul", 0x40000, -1);
 
             BodyConverter.Initialize();
             BodyTable.Initialize();
@@ -312,6 +314,8 @@ namespace Ultima
                     return 400 + ((int)(_fileIndex4.IdxLength - (35000 * 12)) / (12 * 175));
                 case 5:
                     return 400 + ((int)(_fileIndex5.IdxLength - (35000 * 12)) / (12 * 175));
+                case 6:
+                    return 400 + ((int)(_fileIndex6.IdxLength - (35000 * 12)) / (12 * 175));
             }
         }
 
@@ -465,6 +469,22 @@ namespace Ultima
                 case 5:
                     fileIndex = _fileIndex5;
                     if ((body < 200) && (body != 34)) // looks strange, though it works.
+                    {
+                        index = body * 110;
+                    }
+                    else if (body < 400)
+                    {
+                        index = 22000 + ((body - 200) * 65);
+                    }
+                    else
+                    {
+                        index = 35000 + ((body - 400) * 175);
+                    }
+
+                    break;
+                case 6:
+                    fileIndex = _fileIndex6;
+                    if (body < 200)
                     {
                         index = body * 110;
                     }

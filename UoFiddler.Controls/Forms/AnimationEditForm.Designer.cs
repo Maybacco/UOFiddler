@@ -314,7 +314,8 @@
             "anim2",
             "anim3",
             "anim4",
-            "anim5"});
+            "anim5",
+            "anim6"});
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(121, 25);
             this.toolStripComboBox1.SelectedIndexChanged += new System.EventHandler(this.OnAnimChanged);

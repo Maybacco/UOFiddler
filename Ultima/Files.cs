@@ -47,6 +47,8 @@ namespace Ultima
             "anim4.mul",
             "anim5.idx",
             "anim5.mul",
+            "anim6.idx",
+            "anim6.mul",
             "animdata.mul",
             "art.mul",
             "artidx.mul",
