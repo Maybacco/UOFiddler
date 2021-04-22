@@ -70,7 +70,7 @@ namespace Ultima
             _fileIndex3 = new FileIndex("Anim3.idx", "Anim3.mul", -1);
             _fileIndex4 = new FileIndex("Anim4.idx", "Anim4.mul", -1);
             _fileIndex5 = new FileIndex("Anim5.idx", "Anim5.mul", -1);
-            _fileIndex5 = new FileIndex("Anim6.idx", "Anim6.mul", -1);
+            _fileIndex6 = new FileIndex("Anim6.idx", "Anim6.mul", -1);
 
             SetAnimCache();
         }
