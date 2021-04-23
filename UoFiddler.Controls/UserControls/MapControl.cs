@@ -64,6 +64,7 @@ namespace UoFiddler.Controls.UserControls
         private bool _isMoving;
         private Point _movingPoint;
         private bool _renderingZoom;
+        private bool _succImported;
 
         public static int HScrollBar => _refMarker.hScrollBar.Value;
         public static int VScrollBar => _refMarker.vScrollBar.Value;
@@ -1421,8 +1422,41 @@ namespace UoFiddler.Controls.UserControls
             Cursor.Current = Cursors.Default;
         }
 
+        private void OnClickMultiImportDiff(object sender, EventArgs e)
+        {
+            OnClickImportDiff(sender, e);
+
+            if(_succImported)
+            {
+                string oldmap = Path.Combine(Files.RootDir, $"map{_currMapId}_OLD.mul");
+                string oldidx = Path.Combine(Files.RootDir, $"staidx{_currMapId}_OLD.mul");
+                string oldsta = Path.Combine(Files.RootDir, $"statics{_currMapId}_OLD.mul");
+
+                if (File.Exists(oldmap))
+                    File.Delete(oldmap);
+                if (File.Exists(oldidx))
+                    File.Delete(oldidx);
+                if (File.Exists(oldsta))
+                    File.Delete(oldsta);
+
+                File.Move(Path.Combine(Files.RootDir, $"map{_currMapId}.mul"), oldmap);
+                File.Move(Path.Combine(Files.RootDir, $"staidx{_currMapId}.mul"), oldidx);
+                File.Move(Path.Combine(Files.RootDir, $"statics{_currMapId}.mul"), oldsta);
+
+                File.Copy(Path.Combine(Options.OutputPath, $"map{_currMapId}.mul"), Path.Combine(Files.RootDir, $"map{_currMapId}.mul"));
+                File.Copy(Path.Combine(Options.OutputPath, $"staidx{_currMapId}.mul"), Path.Combine(Files.RootDir, $"staidx{_currMapId}.mul"));
+                File.Copy(Path.Combine(Options.OutputPath, $"statics{_currMapId}.mul"), Path.Combine(Files.RootDir, $"statics{_currMapId}.mul"));
+
+                Map.Reload();
+                ControlEvents.FireFilePathChangeEvent();
+                MessageBox.Show($"Files reloaded, ready for another patch", "Reloaded", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+            }
+        }
+
         private void OnClickImportDiff(object sender, EventArgs e)
         {
+            _succImported = false;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -1664,6 +1698,8 @@ namespace UoFiddler.Controls.UserControls
 
             MessageBox.Show($"TbtDiff patch successfully loaded! New files saved in: {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+
+            _succImported = true;
         }
 
         private MapExportDiffForm _showFormMapDiffExport;

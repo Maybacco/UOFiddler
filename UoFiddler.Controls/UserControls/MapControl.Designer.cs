@@ -115,12 +115,15 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripDropDownButton6 = new System.Windows.Forms.ToolStripDropDownButton();
             this.importTBTDIFFPackageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importJsonPackageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.multiTBTDiffImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton7 = new System.Windows.Forms.ToolStripDropDownButton();
             this.addSelectionToRegionAreasListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearRegionAreasListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exportAreasListToRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.exportResourceRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.showClientLocToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -131,8 +134,6 @@ namespace UoFiddler.Controls.UserControls
             this.collapsibleSplitter2 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.collapsibleSplitter1 = new UoFiddler.Controls.UserControls.CollapsibleSplitter();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.exportResourceRegionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -718,6 +719,7 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripDropDownButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton6.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importTBTDIFFPackageToolStripMenuItem,
+            this.multiTBTDiffImportToolStripMenuItem,
             this.importJsonPackageToolStripMenuItem});
             this.toolStripDropDownButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton6.Name = "toolStripDropDownButton6";
@@ -737,6 +739,13 @@ namespace UoFiddler.Controls.UserControls
             this.importJsonPackageToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.importJsonPackageToolStripMenuItem.Text = "Import Json";
             this.importJsonPackageToolStripMenuItem.Click += new System.EventHandler(this.OnClickImportJson);
+            // 
+            // multiTBTDiffImportToolStripMenuItem
+            // 
+            this.multiTBTDiffImportToolStripMenuItem.Name = "multiTBTDiffImportToolStripMenuItem";
+            this.multiTBTDiffImportToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.multiTBTDiffImportToolStripMenuItem.Text = "Multi TBTDiff Import";
+            this.multiTBTDiffImportToolStripMenuItem.Click += new System.EventHandler(this.OnClickMultiImportDiff);
             // 
             // toolStripSeparator10
             // 
@@ -784,6 +793,18 @@ namespace UoFiddler.Controls.UserControls
             this.exportAreasListToRegionToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.exportAreasListToRegionToolStripMenuItem.Text = "Export Rect List to Region...";
             this.exportAreasListToRegionToolStripMenuItem.Click += new System.EventHandler(this.OnClickRegionExport);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(215, 6);
+            // 
+            // exportResourceRegionToolStripMenuItem
+            // 
+            this.exportResourceRegionToolStripMenuItem.Name = "exportResourceRegionToolStripMenuItem";
+            this.exportResourceRegionToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.exportResourceRegionToolStripMenuItem.Text = "Export Resource Region...";
+            this.exportResourceRegionToolStripMenuItem.Click += new System.EventHandler(this.ExportRegionResource_Click);
             // 
             // toolStripSeparator12
             // 
@@ -878,18 +899,6 @@ namespace UoFiddler.Controls.UserControls
             this.pictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.pictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnMouseUp);
             this.pictureBox.Resize += new System.EventHandler(this.OnResizeMap);
-            // 
-            // toolStripSeparator11
-            // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(215, 6);
-            // 
-            // exportResourceRegionToolStripMenuItem
-            // 
-            this.exportResourceRegionToolStripMenuItem.Name = "exportResourceRegionToolStripMenuItem";
-            this.exportResourceRegionToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.exportResourceRegionToolStripMenuItem.Text = "Export Resource Region...";
-            this.exportResourceRegionToolStripMenuItem.Click += new System.EventHandler(this.ExportRegionResource_Click);
             // 
             // MapControl
             // 
@@ -1011,5 +1020,6 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripMenuItem ShowRectanglesMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem exportResourceRegionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem multiTBTDiffImportToolStripMenuItem;
     }
 }
