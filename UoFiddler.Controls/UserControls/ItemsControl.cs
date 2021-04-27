@@ -1064,5 +1064,216 @@ namespace UoFiddler.Controls.UserControls
                 }
             }
         }
+
+        private void insertStartingFromText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter)
+            {
+                return;
+            }
+
+            if (!Utils.ConvertStringToInt(insertStartingFromText.Text, out int index, 0, Art.GetMaxItemID()))
+            {
+                return;
+            }
+
+            TileViewContextMenuStrip.Close();
+
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Multiselect = true;
+                dialog.Title = $"Choose image file to insert from 0x{index:X}";
+                dialog.CheckFileExists = true;
+                dialog.Filter = "Image files (*.tif;*.tiff;*.bmp)|*.tif;*.tiff;*.bmp";
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < dialog.FileNames.Length; i++)
+                {
+                    var currentIdx = index + i;
+                    AddSingleItem(dialog.FileNames[i], currentIdx);
+                }
+
+            }
+        }
+
+        private void AddSingleItem(string fileName, int index)
+        {
+            Bitmap bmp = new Bitmap(fileName);
+            if (fileName.Contains(".bmp"))
+            {
+                bmp = Utils.ConvertBmp(bmp);
+            }
+
+            Art.ReplaceStatic(index, bmp);
+            ControlEvents.FireItemChangeEvent(this, index);
+            Options.ChangedUltimaClass["Art"] = true;
+            if (_showFreeSlots)
+            {
+                SelectedGraphicId = index;
+                UpdateToolStripLabels(index);
+                UpdateDetail(index);
+            }
+            else
+            {
+                bool done = false;
+                for (int i = 0; i < _itemList.Count; ++i)
+                {
+                    if (index >= _itemList[i])
+                    {
+                        continue;
+                    }
+
+                    _itemList.Insert(i, index);
+
+                    done = true;
+                    break;
+                }
+
+                if (!done)
+                {
+                    _itemList.Add(index);
+                }
+
+                ItemsTileView.VirtualListSize = _itemList.Count;
+                ItemsTileView.Invalidate();
+                SelectedGraphicId = index;
+
+                UpdateToolStripLabels(index);
+                UpdateDetail(index);
+            }
+        }
+
+
+        private void saveSingleFormat(int index, ImageFormat format)
+        {
+            if (!Art.IsValidStatic(index))
+            {
+                return;
+            }
+
+            string fileExtension = Utils.GetFileExtensionFor(format);
+            string fileName = Path.Combine(Options.OutputPath, $"Item 0x{index:X4}.{fileExtension}");
+
+            using (Bitmap bit = new Bitmap(Art.GetStatic(index)))
+            {
+                bit.Save(fileName, format);
+            }
+        }
+
+        private void asBmpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (!Utils.ConvertStringToInt(toIndexBox.Text, out int index, 0, Art.GetMaxItemID()))
+            {
+                return;
+            }
+
+            if(index <= _selectedGraphicIdId)
+            {
+                return;
+            }
+
+            if (_selectedGraphicIdId == -1)
+            {
+                return;
+            }
+
+            TileViewContextMenuStrip.Close();
+
+            for (int i = _selectedGraphicIdId; i <= index; ++i)
+            {
+                saveSingleFormat(i, ImageFormat.Bmp);
+            }
+
+            MessageBox.Show($"All item exported in {Options.OutputPath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1);
+
+        }
+
+        private void asTiffToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (!Utils.ConvertStringToInt(toIndexBox.Text, out int index, 0, Art.GetMaxItemID()))
+            {
+                return;
+            }
+
+            if (index <= _selectedGraphicIdId)
+            {
+                return;
+            }
+
+            if (_selectedGraphicIdId == -1)
+            {
+                return;
+            }
+
+            TileViewContextMenuStrip.Close();
+
+            for (int i = _selectedGraphicIdId; i <= index; ++i)
+            {
+                saveSingleFormat(i, ImageFormat.Tiff);
+            }
+
+            MessageBox.Show($"All item exported in {Options.OutputPath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1);
+        }
+
+        private void asJpgToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (!Utils.ConvertStringToInt(toIndexBox.Text, out int index, 0, Art.GetMaxItemID()))
+            {
+                return;
+            }
+
+            if (index <= _selectedGraphicIdId)
+            {
+                return;
+            }
+
+            if (_selectedGraphicIdId == -1)
+            {
+                return;
+            }
+
+            TileViewContextMenuStrip.Close();
+
+            for (int i = _selectedGraphicIdId; i <= index; ++i)
+            {
+                saveSingleFormat(i, ImageFormat.Jpeg);
+            }
+
+            MessageBox.Show($"All item exported in {Options.OutputPath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1);
+        }
+
+        private void asPngToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            if (!Utils.ConvertStringToInt(toIndexBox.Text, out int index, 0, Art.GetMaxItemID()))
+            {
+                return;
+            }
+
+            if (index <= _selectedGraphicIdId)
+            {
+                return;
+            }
+
+            if (_selectedGraphicIdId == -1)
+            {
+                return;
+            }
+
+            TileViewContextMenuStrip.Close();
+
+            for (int i = _selectedGraphicIdId; i <= index; ++i)
+            {
+                saveSingleFormat(i, ImageFormat.Png);
+            }
+
+            MessageBox.Show($"All item exported in {Options.OutputPath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information,
+                MessageBoxDefaultButton.Button1);
+        }
     }
 }

@@ -64,10 +64,18 @@ namespace UoFiddler.Controls.UserControls
             this.tiffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.asJpgToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.asPngToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportImageToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toIndexBox = new System.Windows.Forms.ToolStripTextBox();
+            this.asBmpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.asTiffToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.asJpgToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.asPngToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertAtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InsertText = new System.Windows.Forms.ToolStripTextBox();
+            this.insertStartingFromToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insertStartingFromText = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -210,13 +218,15 @@ namespace UoFiddler.Controls.UserControls
             this.selectInGumpsTabFemaleToolStripMenuItem,
             this.toolStripSeparator2,
             this.extractToolStripMenuItem,
+            this.exportImageToToolStripMenuItem,
             this.replaceToolStripMenuItem,
             this.removeToolStripMenuItem,
             this.insertAtToolStripMenuItem,
+            this.insertStartingFromToolStripMenuItem,
             this.toolStripSeparator1,
             this.saveToolStripMenuItem});
             this.TileViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.TileViewContextMenuStrip.Size = new System.Drawing.Size(213, 286);
+            this.TileViewContextMenuStrip.Size = new System.Drawing.Size(213, 352);
             this.TileViewContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.TileViewContextMenuStrip_Opening);
             // 
             // showFreeSlotsToolStripMenuItem
@@ -320,6 +330,52 @@ namespace UoFiddler.Controls.UserControls
             this.asPngToolStripMenuItem1.Text = "As Png";
             this.asPngToolStripMenuItem1.Click += new System.EventHandler(this.Extract_Image_ClickPng);
             // 
+            // exportImageToToolStripMenuItem
+            // 
+            this.exportImageToToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toIndexBox,
+            this.asBmpToolStripMenuItem1,
+            this.asTiffToolStripMenuItem1,
+            this.asJpgToolStripMenuItem2,
+            this.asPngToolStripMenuItem2});
+            this.exportImageToToolStripMenuItem.Name = "exportImageToToolStripMenuItem";
+            this.exportImageToToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.exportImageToToolStripMenuItem.Text = "Export Image To..";
+            // 
+            // toIndexBox
+            // 
+            this.toIndexBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toIndexBox.Name = "toIndexBox";
+            this.toIndexBox.Size = new System.Drawing.Size(100, 23);
+            // 
+            // asBmpToolStripMenuItem1
+            // 
+            this.asBmpToolStripMenuItem1.Name = "asBmpToolStripMenuItem1";
+            this.asBmpToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
+            this.asBmpToolStripMenuItem1.Text = "As Bmp";
+            this.asBmpToolStripMenuItem1.Click += new System.EventHandler(this.asBmpToolStripMenuItem1_Click);
+            // 
+            // asTiffToolStripMenuItem1
+            // 
+            this.asTiffToolStripMenuItem1.Name = "asTiffToolStripMenuItem1";
+            this.asTiffToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
+            this.asTiffToolStripMenuItem1.Text = "As Tiff";
+            this.asTiffToolStripMenuItem1.Click += new System.EventHandler(this.asTiffToolStripMenuItem1_Click);
+            // 
+            // asJpgToolStripMenuItem2
+            // 
+            this.asJpgToolStripMenuItem2.Name = "asJpgToolStripMenuItem2";
+            this.asJpgToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
+            this.asJpgToolStripMenuItem2.Text = "As Jpg";
+            this.asJpgToolStripMenuItem2.Click += new System.EventHandler(this.asJpgToolStripMenuItem2_Click);
+            // 
+            // asPngToolStripMenuItem2
+            // 
+            this.asPngToolStripMenuItem2.Name = "asPngToolStripMenuItem2";
+            this.asPngToolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
+            this.asPngToolStripMenuItem2.Text = "As Png";
+            this.asPngToolStripMenuItem2.Click += new System.EventHandler(this.asPngToolStripMenuItem2_Click);
+            // 
             // replaceToolStripMenuItem
             // 
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
@@ -349,6 +405,21 @@ namespace UoFiddler.Controls.UserControls
             this.InsertText.Size = new System.Drawing.Size(100, 23);
             this.InsertText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownInsertText);
             this.InsertText.TextChanged += new System.EventHandler(this.OnTextChangedInsert);
+            // 
+            // insertStartingFromToolStripMenuItem
+            // 
+            this.insertStartingFromToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insertStartingFromText});
+            this.insertStartingFromToolStripMenuItem.Name = "insertStartingFromToolStripMenuItem";
+            this.insertStartingFromToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.insertStartingFromToolStripMenuItem.Text = "Insert Starting From";
+            // 
+            // insertStartingFromText
+            // 
+            this.insertStartingFromText.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.insertStartingFromText.Name = "insertStartingFromText";
+            this.insertStartingFromText.Size = new System.Drawing.Size(100, 23);
+            this.insertStartingFromText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.insertStartingFromText_KeyDown);
             // 
             // toolStripSeparator1
             // 
@@ -579,5 +650,13 @@ namespace UoFiddler.Controls.UserControls
         private RichTextBox DetailTextBox;
         private ToolStripMenuItem selectInGumpsTabMaleToolStripMenuItem;
         private ToolStripMenuItem selectInGumpsTabFemaleToolStripMenuItem;
+        private ToolStripMenuItem insertStartingFromToolStripMenuItem;
+        private ToolStripTextBox insertStartingFromText;
+        private ToolStripMenuItem exportImageToToolStripMenuItem;
+        private ToolStripTextBox toIndexBox;
+        private ToolStripMenuItem asBmpToolStripMenuItem1;
+        private ToolStripMenuItem asTiffToolStripMenuItem1;
+        private ToolStripMenuItem asJpgToolStripMenuItem2;
+        private ToolStripMenuItem asPngToolStripMenuItem2;
     }
 }
