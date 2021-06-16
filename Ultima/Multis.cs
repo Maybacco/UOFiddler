@@ -72,14 +72,14 @@ namespace Ultima
                     return MultiComponentList.Empty;
                 }
 
-                if (PostHSFormat || Art.IsUOAHS())
+                /*if (PostHSFormat || Art.IsUOAHS())
                 {
                     return new MultiComponentList(new BinaryReader(stream), length / 16);
                 }
                 else
-                {
+                {*/
                     return new MultiComponentList(new BinaryReader(stream), length / 12);
-                }
+                //}
             }
             catch
             {
@@ -349,7 +349,8 @@ namespace Ultima
 
         public static void Save(string path)
         {
-            bool isUOAHS = PostHSFormat || Art.IsUOAHS();
+            bool isUOAHS = //PostHSFormat || Art.IsUOAHS();
+                false;
 
             string idx = Path.Combine(path, "multi.idx");
             string mul = Path.Combine(path, "multi.mul");
@@ -487,8 +488,18 @@ namespace Ultima
                     }
                 }
             }
-
-            var canvas = new Bitmap(xMax - xMin, yMax - yMin);
+            int width = xMax - xMin;
+            int height = yMax - yMin;
+            Bitmap canvas;
+            try
+            {
+                canvas = new Bitmap(width, height);
+            }
+            catch
+            {
+                return null;
+            }
+            
             Graphics gfx = Graphics.FromImage(canvas);
             gfx.Clear(Color.Transparent);
 
@@ -531,7 +542,9 @@ namespace Ultima
 
         public MultiComponentList(BinaryReader reader, int count)
         {
-            bool useNewMultiFormat = Multis.PostHSFormat || Art.IsUOAHS();
+            bool useNewMultiFormat =//Multis.PostHSFormat || Art.IsUOAHS();
+                false;
+
             _min = _max = Point.Empty;
             SortedTiles = new MultiTileEntry[count];
             for (int i = 0; i < count; ++i)
