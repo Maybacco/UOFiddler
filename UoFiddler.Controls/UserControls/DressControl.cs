@@ -226,30 +226,30 @@ namespace UoFiddler.Controls.UserControls
                     {
                         if (_human)
                         {
-                            background = new Bitmap(Gumps.GetGump(0xC));
+                            background = new Bitmap(Gumps.GetGump(50402));
                         }
                         if (_elve)
                         {
-                            background = new Bitmap(Gumps.GetGump(0xE));
+                            background = new Bitmap(Gumps.GetGump(50997));
                         }
                         if (_gargoyle)
                         {
-                            background = new Bitmap(Gumps.GetGump(0x29A));
+                            background = new Bitmap(Gumps.GetGump(50440));
                         }
                     }
                     else
                     {
                         if (_human)
                         {
-                            background = new Bitmap(Gumps.GetGump(0xD));
+                            background = new Bitmap(Gumps.GetGump(50403));
                         }
                         if (_elve)
                         {
-                            background = new Bitmap(Gumps.GetGump(0xF));
+                            background = new Bitmap(Gumps.GetGump(50998));
                         }
                         if (_gargoyle)
                         {
-                            background = new Bitmap(Gumps.GetGump(0x299));
+                            background = new Bitmap(Gumps.GetGump(50441));
                         }
                     }
 
