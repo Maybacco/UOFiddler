@@ -15,6 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using System.Linq;
 using Ultima;
 using UoFiddler.Controls.Classes;
 using UoFiddler.Plugin.MultiEditor.Classes;
@@ -30,6 +31,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
         private const int _drawTileSizeHeight = 45;
         private const int _drawTileSizeWidth = 45;
         private List<int> _drawTilesList = new List<int>();
+        private List<int> _drawTilesListFiltered;
         private readonly List<MultiTile> _overlayList = new List<MultiTile>();
         private bool _loaded;
         private bool _moving;
@@ -1151,13 +1153,33 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
                 return;
             }
 
-            _drawTilesList = (List<int>)e.Node.Tag;
-            vScrollBarDrawTiles.Maximum = (_drawTilesList.Count / _pictureBoxDrawTilesCol) + 1;
+            if (!(e.Node.Tag is string) || (string)e.Node.Tag != "Uncategorized")
+                _drawTilesList = (List<int>)e.Node.Tag;
+            else
+            {
+                int staticLength = Art.GetMaxItemID();
+                _drawTilesList = new List<int>(staticLength);
+                for (int i = 0; i <= staticLength; ++i)
+                {
+                    if (Art.IsValidStatic(i))
+                    {
+                        _drawTilesList.Add(i);
+                    }
+                }
+            }
+            textBoxFilter.Text = "";
+            _drawTilesListFiltered = null;
+            vScrollBarDrawTiles_Setup();
+            pictureBoxDrawTiles.Invalidate();
+        }
+
+        private void vScrollBarDrawTiles_Setup()
+        {
+            vScrollBarDrawTiles.Maximum = _drawTilesListFiltered == null ? (_drawTilesList.Count / _pictureBoxDrawTilesCol) + 1 : (_drawTilesListFiltered.Count / _pictureBoxDrawTilesCol) + 1;
             vScrollBarDrawTiles.Minimum = 1;
             vScrollBarDrawTiles.SmallChange = 1;
             vScrollBarDrawTiles.LargeChange = 1;
             vScrollBarDrawTiles.Value = 1;
-            pictureBoxDrawTiles.Invalidate();
         }
 
         private void Undo_onClick(object sender, EventArgs e)
@@ -1238,6 +1260,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
 
         private void XML_InitializeToolBox()
         {
+            treeViewTilesXML.Nodes.Add(new TreeNode("Uncategorized") { Tag = "Uncategorized" });
             string path = Options.AppDataPath;
             string fileName = Path.Combine(path, "plugins/multieditor.xml");
             if (!File.Exists(fileName))
@@ -1285,9 +1308,15 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
             int value = Math.Max(0,
                 (_pictureBoxDrawTilesCol * (vScrollBarDrawTiles.Value - 1)) + x + (y * _pictureBoxDrawTilesCol));
 
-            if (_drawTilesList.Count > value)
+            if (_drawTilesListFiltered == null)
             {
-                return _drawTilesList[value];
+                if (_drawTilesList.Count > value)
+                    return _drawTilesList[value];
+            }
+            else 
+            {
+                if (_drawTilesListFiltered.Count > value)
+                    return _drawTilesListFiltered[value];
             }
 
             return -1;
@@ -1329,6 +1358,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
             {
                 for (int x = 0; x < _pictureBoxDrawTilesCol; ++x)
                 {
+                    
                     int index = GetIndex(x, y);
                     if (index < 0)
                     {
@@ -1412,7 +1442,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
 
             _pictureBoxDrawTilesCol = pictureBoxDrawTiles.Width / _drawTileSizeWidth;
             _pictureBoxDrawTilesRow = (pictureBoxDrawTiles.Height / _drawTileSizeHeight) + 1;
-            vScrollBarDrawTiles.Maximum = (_drawTilesList.Count / _pictureBoxDrawTilesCol) + 1;
+            vScrollBarDrawTiles.Maximum = _drawTilesListFiltered == null ? (_drawTilesList.Count / _pictureBoxDrawTilesCol) + 1 : (_drawTilesListFiltered.Count / _pictureBoxDrawTilesCol) + 1;
             vScrollBarDrawTiles.Minimum = 1;
             vScrollBarDrawTiles.SmallChange = 1;
             vScrollBarDrawTiles.LargeChange = _pictureBoxDrawTilesRow;
@@ -1528,6 +1558,32 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
         private void OnDummyContextMenuOpening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
+        }
+
+        private void textBoxFilter_Leave(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBoxFilter.Text))
+                _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.Contains(textBoxFilter.Text)).ToList();
+            else
+                _drawTilesListFiltered = null;
+
+            pictureBoxDrawTiles.Invalidate();
+            vScrollBarDrawTiles_Setup();
+        }
+
+        private void textBoxFilter_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)13)
+            {
+                if (!string.IsNullOrEmpty(textBoxFilter.Text))
+                    _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.Contains(textBoxFilter.Text)).ToList();
+                else
+                    _drawTilesListFiltered = null;
+
+                pictureBoxDrawTiles.Invalidate();
+                vScrollBarDrawTiles_Setup();
+                textBoxFilter.SelectAll();
+            }
         }
     }
 }
