@@ -1563,7 +1563,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
         private void textBoxFilter_Leave(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(textBoxFilter.Text))
-                _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.Contains(textBoxFilter.Text)).ToList();
+                _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.ToLower().Contains(textBoxFilter.Text.ToLower())).ToList();
             else
                 _drawTilesListFiltered = null;
 
@@ -1576,7 +1576,7 @@ namespace UoFiddler.Plugin.MultiEditor.UserControls
             if (e.KeyChar == (char)13)
             {
                 if (!string.IsNullOrEmpty(textBoxFilter.Text))
-                    _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.Contains(textBoxFilter.Text)).ToList();
+                    _drawTilesListFiltered = _drawTilesList.Where(tile => TileData.ItemTable[tile].Name.ToLower().Contains(textBoxFilter.Text.ToLower())).ToList();
                 else
                     _drawTilesListFiltered = null;
 
