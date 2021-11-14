@@ -43,9 +43,15 @@ namespace UoFiddler.Controls.UserControls
         {
             this.components = new System.ComponentModel.Container();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tabControlGraphicView = new System.Windows.Forms.TabControl();
+            this.tabPageArt = new System.Windows.Forms.TabPage();
             this.DetailPictureBox = new System.Windows.Forms.PictureBox();
             this.DetailPictureBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.changeBackgroundColorToolStripMenuItemDetail = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabPageGumpM = new System.Windows.Forms.TabPage();
+            this.GumpMPictureBox = new System.Windows.Forms.PictureBox();
+            this.tabPageGumpF = new System.Windows.Forms.TabPage();
+            this.GumpFPictureBox = new System.Windows.Forms.PictureBox();
             this.DetailTextBox = new System.Windows.Forms.RichTextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ItemsTileView = new UoFiddler.Controls.UserControls.TileView.TileViewControl();
@@ -98,8 +104,14 @@ namespace UoFiddler.Controls.UserControls
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tabControlGraphicView.SuspendLayout();
+            this.tabPageArt.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DetailPictureBox)).BeginInit();
             this.DetailPictureBoxContextMenuStrip.SuspendLayout();
+            this.tabPageGumpM.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GumpMPictureBox)).BeginInit();
+            this.tabPageGumpF.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.GumpFPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -113,30 +125,53 @@ namespace UoFiddler.Controls.UserControls
             // 
             this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer2.Name = "splitContainer2";
             this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.DetailPictureBox);
+            this.splitContainer2.Panel1.Controls.Add(this.tabControlGraphicView);
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.DetailTextBox);
-            this.splitContainer2.Size = new System.Drawing.Size(219, 360);
-            this.splitContainer2.SplitterDistance = 206;
+            this.splitContainer2.Size = new System.Drawing.Size(219, 359);
+            this.splitContainer2.SplitterDistance = 205;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // tabControlGraphicView
+            // 
+            this.tabControlGraphicView.Controls.Add(this.tabPageArt);
+            this.tabControlGraphicView.Controls.Add(this.tabPageGumpM);
+            this.tabControlGraphicView.Controls.Add(this.tabPageGumpF);
+            this.tabControlGraphicView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControlGraphicView.Location = new System.Drawing.Point(0, 0);
+            this.tabControlGraphicView.Name = "tabControlGraphicView";
+            this.tabControlGraphicView.SelectedIndex = 0;
+            this.tabControlGraphicView.Size = new System.Drawing.Size(219, 205);
+            this.tabControlGraphicView.TabIndex = 0;
+            // 
+            // tabPageArt
+            // 
+            this.tabPageArt.Controls.Add(this.DetailPictureBox);
+            this.tabPageArt.Location = new System.Drawing.Point(4, 25);
+            this.tabPageArt.Name = "tabPageArt";
+            this.tabPageArt.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageArt.Size = new System.Drawing.Size(211, 176);
+            this.tabPageArt.TabIndex = 0;
+            this.tabPageArt.Text = "Art";
+            this.tabPageArt.UseVisualStyleBackColor = true;
             // 
             // DetailPictureBox
             // 
             this.DetailPictureBox.ContextMenuStrip = this.DetailPictureBoxContextMenuStrip;
             this.DetailPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DetailPictureBox.Location = new System.Drawing.Point(0, 0);
-            this.DetailPictureBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DetailPictureBox.Location = new System.Drawing.Point(3, 3);
+            this.DetailPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.DetailPictureBox.Name = "DetailPictureBox";
-            this.DetailPictureBox.Size = new System.Drawing.Size(219, 206);
+            this.DetailPictureBox.Size = new System.Drawing.Size(205, 170);
             this.DetailPictureBox.TabIndex = 0;
             this.DetailPictureBox.TabStop = false;
             // 
@@ -155,11 +190,55 @@ namespace UoFiddler.Controls.UserControls
             this.changeBackgroundColorToolStripMenuItemDetail.Text = "Change background color";
             this.changeBackgroundColorToolStripMenuItemDetail.Click += new System.EventHandler(this.ChangeBackgroundColorToolStripMenuItemDetail_Click);
             // 
+            // tabPageGumpM
+            // 
+            this.tabPageGumpM.Controls.Add(this.GumpMPictureBox);
+            this.tabPageGumpM.Location = new System.Drawing.Point(4, 25);
+            this.tabPageGumpM.Name = "tabPageGumpM";
+            this.tabPageGumpM.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGumpM.Size = new System.Drawing.Size(211, 176);
+            this.tabPageGumpM.TabIndex = 1;
+            this.tabPageGumpM.Text = "Gump (M)";
+            this.tabPageGumpM.UseVisualStyleBackColor = true;
+            // 
+            // GumpMPictureBox
+            // 
+            this.GumpMPictureBox.ContextMenuStrip = this.DetailPictureBoxContextMenuStrip;
+            this.GumpMPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GumpMPictureBox.Location = new System.Drawing.Point(3, 3);
+            this.GumpMPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.GumpMPictureBox.Name = "GumpMPictureBox";
+            this.GumpMPictureBox.Size = new System.Drawing.Size(205, 170);
+            this.GumpMPictureBox.TabIndex = 1;
+            this.GumpMPictureBox.TabStop = false;
+            // 
+            // tabPageGumpF
+            // 
+            this.tabPageGumpF.Controls.Add(this.GumpFPictureBox);
+            this.tabPageGumpF.Location = new System.Drawing.Point(4, 25);
+            this.tabPageGumpF.Name = "tabPageGumpF";
+            this.tabPageGumpF.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageGumpF.Size = new System.Drawing.Size(211, 176);
+            this.tabPageGumpF.TabIndex = 2;
+            this.tabPageGumpF.Text = "Gump (F)";
+            this.tabPageGumpF.UseVisualStyleBackColor = true;
+            // 
+            // GumpFPictureBox
+            // 
+            this.GumpFPictureBox.ContextMenuStrip = this.DetailPictureBoxContextMenuStrip;
+            this.GumpFPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GumpFPictureBox.Location = new System.Drawing.Point(3, 3);
+            this.GumpFPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.GumpFPictureBox.Name = "GumpFPictureBox";
+            this.GumpFPictureBox.Size = new System.Drawing.Size(205, 170);
+            this.GumpFPictureBox.TabIndex = 1;
+            this.GumpFPictureBox.TabStop = false;
+            // 
             // DetailTextBox
             // 
             this.DetailTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DetailTextBox.Location = new System.Drawing.Point(0, 0);
-            this.DetailTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DetailTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.DetailTextBox.Name = "DetailTextBox";
             this.DetailTextBox.Size = new System.Drawing.Size(219, 149);
             this.DetailTextBox.TabIndex = 0;
@@ -168,8 +247,8 @@ namespace UoFiddler.Controls.UserControls
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 38);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 39);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -179,7 +258,7 @@ namespace UoFiddler.Controls.UserControls
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(857, 360);
+            this.splitContainer1.Size = new System.Drawing.Size(857, 359);
             this.splitContainer1.SplitterDistance = 633;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 6;
@@ -193,10 +272,10 @@ namespace UoFiddler.Controls.UserControls
             this.ItemsTileView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ItemsTileView.FocusIndex = -1;
             this.ItemsTileView.Location = new System.Drawing.Point(0, 0);
-            this.ItemsTileView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ItemsTileView.Margin = new System.Windows.Forms.Padding(4);
             this.ItemsTileView.MultiSelect = true;
             this.ItemsTileView.Name = "ItemsTileView";
-            this.ItemsTileView.Size = new System.Drawing.Size(633, 360);
+            this.ItemsTileView.Size = new System.Drawing.Size(633, 359);
             this.ItemsTileView.TabIndex = 0;
             this.ItemsTileView.TileBackgroundColor = System.Drawing.SystemColors.Window;
             this.ItemsTileView.TileBorderColor = System.Drawing.Color.Gray;
@@ -492,7 +571,7 @@ namespace UoFiddler.Controls.UserControls
             this.ToolStrip.Location = new System.Drawing.Point(0, 0);
             this.ToolStrip.Name = "ToolStrip";
             this.ToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.ToolStrip.Size = new System.Drawing.Size(857, 30);
+            this.ToolStrip.Size = new System.Drawing.Size(857, 31);
             this.ToolStrip.TabIndex = 7;
             // 
             // SearchToolStripButton
@@ -500,7 +579,7 @@ namespace UoFiddler.Controls.UserControls
             this.SearchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.SearchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.SearchToolStripButton.Name = "SearchToolStripButton";
-            this.SearchToolStripButton.Size = new System.Drawing.Size(57, 27);
+            this.SearchToolStripButton.Size = new System.Drawing.Size(57, 28);
             this.SearchToolStripButton.Text = "Search";
             this.SearchToolStripButton.Click += new System.EventHandler(this.OnSearchClick);
             // 
@@ -508,7 +587,7 @@ namespace UoFiddler.Controls.UserControls
             // 
             this.ProgressBar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(133, 27);
+            this.ProgressBar.Size = new System.Drawing.Size(133, 28);
             // 
             // PreloadItemsToolStripButton
             // 
@@ -516,7 +595,7 @@ namespace UoFiddler.Controls.UserControls
             this.PreloadItemsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.PreloadItemsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PreloadItemsToolStripButton.Name = "PreloadItemsToolStripButton";
-            this.PreloadItemsToolStripButton.Size = new System.Drawing.Size(104, 27);
+            this.PreloadItemsToolStripButton.Size = new System.Drawing.Size(104, 28);
             this.PreloadItemsToolStripButton.Text = "Preload Items";
             this.PreloadItemsToolStripButton.Click += new System.EventHandler(this.OnClickPreLoad);
             // 
@@ -527,7 +606,7 @@ namespace UoFiddler.Controls.UserControls
             this.ExportAllToolStripMenuItem});
             this.MiscToolStripDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.MiscToolStripDropDownButton.Name = "MiscToolStripDropDownButton";
-            this.MiscToolStripDropDownButton.Size = new System.Drawing.Size(53, 27);
+            this.MiscToolStripDropDownButton.Size = new System.Drawing.Size(53, 28);
             this.MiscToolStripDropDownButton.Text = "Misc";
             // 
             // ExportAllToolStripMenuItem
@@ -577,8 +656,8 @@ namespace UoFiddler.Controls.UserControls
             this.collapsibleSplitter1.ControlToHide = this.ToolStrip;
             this.collapsibleSplitter1.Dock = System.Windows.Forms.DockStyle.Top;
             this.collapsibleSplitter1.ExpandParentForm = false;
-            this.collapsibleSplitter1.Location = new System.Drawing.Point(0, 30);
-            this.collapsibleSplitter1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.collapsibleSplitter1.Location = new System.Drawing.Point(0, 31);
+            this.collapsibleSplitter1.Margin = new System.Windows.Forms.Padding(4);
             this.collapsibleSplitter1.Name = "collapsibleSplitter1";
             this.collapsibleSplitter1.TabIndex = 8;
             this.collapsibleSplitter1.TabStop = false;
@@ -594,7 +673,7 @@ namespace UoFiddler.Controls.UserControls
             this.Controls.Add(this.collapsibleSplitter1);
             this.Controls.Add(this.ToolStrip);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ItemsControl";
             this.Size = new System.Drawing.Size(857, 420);
             this.Load += new System.EventHandler(this.OnLoad);
@@ -602,8 +681,14 @@ namespace UoFiddler.Controls.UserControls
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tabControlGraphicView.ResumeLayout(false);
+            this.tabPageArt.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DetailPictureBox)).EndInit();
             this.DetailPictureBoxContextMenuStrip.ResumeLayout(false);
+            this.tabPageGumpM.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.GumpMPictureBox)).EndInit();
+            this.tabPageGumpF.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.GumpFPictureBox)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -672,5 +757,11 @@ namespace UoFiddler.Controls.UserControls
         private ToolStripMenuItem asTiffToolStripMenuItem1;
         private ToolStripMenuItem asJpgToolStripMenuItem2;
         private ToolStripMenuItem asPngToolStripMenuItem2;
+        private TabControl tabControlGraphicView;
+        private TabPage tabPageArt;
+        private TabPage tabPageGumpM;
+        private TabPage tabPageGumpF;
+        private PictureBox GumpMPictureBox;
+        private PictureBox GumpFPictureBox;
     }
 }

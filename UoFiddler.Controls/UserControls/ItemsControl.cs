@@ -330,12 +330,18 @@ namespace UoFiddler.Controls.UserControls
             ItemData item = TileData.ItemTable[graphic];
             Bitmap bit = Art.GetStatic(graphic);
 
+            //Ottengo AnimID associato all'Art e di conseguenza i relativi Gump
+            var animation = TileData.ItemTable[graphic].Animation;
+            Bitmap gumpM = animation > 0 ? Gumps.GetGump(animation + _maleGumpOffset) : null;
+            Bitmap gumpF = animation > 0 ? Gumps.GetGump(animation + _femaleGumpOffset) : null;
+
             int xMin = 0;
             int xMax = 0;
             int yMin = 0;
             int yMax = 0;
 
             const int defaultSplitterDistance = 180;
+            //Disegno l'Art se presente
             if (bit == null)
             {
                 splitContainer2.SplitterDistance = defaultSplitterDistance;
@@ -364,6 +370,64 @@ namespace UoFiddler.Controls.UserControls
                 DetailPictureBox.Image = newBit;
 
                 Art.Measure(bit, out xMin, out yMin, out xMax, out yMax);
+            }
+
+            //Disegno il Gump(M) se presente
+            if (gumpM == null)
+            {
+                splitContainer2.SplitterDistance = defaultSplitterDistance;
+                Bitmap newBit = new Bitmap(GumpMPictureBox.Size.Width, GumpMPictureBox.Size.Height);
+                using (Graphics newGraph = Graphics.FromImage(newBit))
+                {
+                    newGraph.Clear(_backgroundDetailColor);
+                }
+
+                GumpMPictureBox.Image?.Dispose();
+                GumpMPictureBox.Image = newBit;
+            }
+            else
+            {
+                var distance = gumpM.Size.Height + 10;
+                splitContainer2.SplitterDistance = distance < defaultSplitterDistance ? defaultSplitterDistance : distance;
+
+                Bitmap newBit = new Bitmap(GumpMPictureBox.Size.Width, GumpMPictureBox.Size.Height);
+                using (Graphics newGraph = Graphics.FromImage(newBit))
+                {
+                    newGraph.Clear(_backgroundDetailColor);
+                    newGraph.DrawImage(gumpM, (GumpMPictureBox.Size.Width - gumpM.Width) / 2, 5);
+                }
+
+                GumpMPictureBox.Image?.Dispose();
+                GumpMPictureBox.Image = newBit;
+            }
+
+            //Disegno il Gump(F) se presente
+            if (gumpF == null)
+            {
+                splitContainer2.SplitterDistance = defaultSplitterDistance;
+                Bitmap newBit = new Bitmap(GumpFPictureBox.Size.Width, GumpFPictureBox.Size.Height);
+                using (Graphics newGraph = Graphics.FromImage(newBit))
+                {
+                    newGraph.Clear(_backgroundDetailColor);
+                }
+
+                GumpFPictureBox.Image?.Dispose();
+                GumpFPictureBox.Image = newBit;
+            }
+            else
+            {
+                var distance = gumpF.Size.Height + 10;
+                splitContainer2.SplitterDistance = distance < defaultSplitterDistance ? defaultSplitterDistance : distance;
+
+                Bitmap newBit = new Bitmap(GumpFPictureBox.Size.Width, GumpFPictureBox.Size.Height);
+                using (Graphics newGraph = Graphics.FromImage(newBit))
+                {
+                    newGraph.Clear(_backgroundDetailColor);
+                    newGraph.DrawImage(gumpF, (GumpFPictureBox.Size.Width - gumpF.Width) / 2, 5);
+                }
+
+                GumpFPictureBox.Image?.Dispose();
+                GumpFPictureBox.Image = newBit;
             }
 
             var sb = new StringBuilder();
