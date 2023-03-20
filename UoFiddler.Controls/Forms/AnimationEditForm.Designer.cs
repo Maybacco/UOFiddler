@@ -92,6 +92,7 @@
             this.fromImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
             this.SameCenterButton = new System.Windows.Forms.Button();
             this.SetButton = new System.Windows.Forms.Button();
             this.cbSaveCoordinates = new System.Windows.Forms.CheckBox();
@@ -149,6 +150,9 @@
             this.showOnlyValidToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAllToVDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AnimationTimer = new System.Windows.Forms.Timer(this.components);
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -180,6 +184,8 @@
             this.toolStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDirection)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -252,7 +258,7 @@
             // asBmpToolStripMenuItem
             // 
             this.asBmpToolStripMenuItem.Name = "asBmpToolStripMenuItem";
-            this.asBmpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.asBmpToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.asBmpToolStripMenuItem.Tag = ".bmp";
             this.asBmpToolStripMenuItem.Text = "As Bmp";
             this.asBmpToolStripMenuItem.Click += new System.EventHandler(this.OnClickExtractImages);
@@ -260,7 +266,7 @@
             // asTiffToolStripMenuItem
             // 
             this.asTiffToolStripMenuItem.Name = "asTiffToolStripMenuItem";
-            this.asTiffToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.asTiffToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.asTiffToolStripMenuItem.Tag = ".tiff";
             this.asTiffToolStripMenuItem.Text = "As Tiff";
             this.asTiffToolStripMenuItem.Click += new System.EventHandler(this.OnClickExtractImages);
@@ -276,7 +282,7 @@
             // fromvdToolStripMenuItem
             // 
             this.fromvdToolStripMenuItem.Name = "fromvdToolStripMenuItem";
-            this.fromvdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fromvdToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.fromvdToolStripMenuItem.Text = "From .vd";
             this.fromvdToolStripMenuItem.Click += new System.EventHandler(this.OnClickImportFromVD);
             // 
@@ -291,7 +297,7 @@
             // tovdToolStripMenuItem
             // 
             this.tovdToolStripMenuItem.Name = "tovdToolStripMenuItem";
-            this.tovdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tovdToolStripMenuItem.Size = new System.Drawing.Size(105, 22);
             this.tovdToolStripMenuItem.Text = "To .vd";
             this.tovdToolStripMenuItem.Click += new System.EventHandler(this.OnClickExportToVD);
             // 
@@ -855,6 +861,10 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.button2);
+            this.tabPage2.Controls.Add(this.numericUpDown3);
+            this.tabPage2.Controls.Add(this.numericUpDown4);
+            this.tabPage2.Controls.Add(this.button1);
             this.tabPage2.Controls.Add(this.SameCenterButton);
             this.tabPage2.Controls.Add(this.SetButton);
             this.tabPage2.Controls.Add(this.cbSaveCoordinates);
@@ -876,10 +886,21 @@
             this.tabPage2.Text = "Preview/Edit";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(410, 384);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(78, 20);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "S.C. All Dir";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.SameCenterAllDirButton_Click);
+            // 
             // SameCenterButton
             // 
             this.SameCenterButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SameCenterButton.Location = new System.Drawing.Point(485, 384);
+            this.SameCenterButton.Location = new System.Drawing.Point(494, 384);
             this.SameCenterButton.Name = "SameCenterButton";
             this.SameCenterButton.Size = new System.Drawing.Size(78, 20);
             this.SameCenterButton.TabIndex = 15;
@@ -1445,6 +1466,56 @@
             // 
             this.AnimationTimer.Tick += new System.EventHandler(this.AnimationTimer_Tick);
             // 
+            // numericUpDown3
+            // 
+            this.numericUpDown3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.numericUpDown3.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.numericUpDown3.InterceptArrowKeys = false;
+            this.numericUpDown3.Location = new System.Drawing.Point(422, 4);
+            this.numericUpDown3.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.numericUpDown3.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown3.Name = "numericUpDown3";
+            this.numericUpDown3.Size = new System.Drawing.Size(43, 20);
+            this.numericUpDown3.TabIndex = 18;
+            // 
+            // numericUpDown4
+            // 
+            this.numericUpDown4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.numericUpDown4.InterceptArrowKeys = false;
+            this.numericUpDown4.Location = new System.Drawing.Point(481, 4);
+            this.numericUpDown4.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.numericUpDown4.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown4.Name = "numericUpDown4";
+            this.numericUpDown4.Size = new System.Drawing.Size(43, 20);
+            this.numericUpDown4.TabIndex = 17;
+            // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button2.Location = new System.Drawing.Point(535, 4);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(78, 20);
+            this.button2.TabIndex = 19;
+            this.button2.Text = "Offsett ANIM";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // AnimationEditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1497,6 +1568,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDirection)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1622,5 +1695,9 @@
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.TrackBar trackBarDirection;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.NumericUpDown numericUpDown3;
+        private System.Windows.Forms.NumericUpDown numericUpDown4;
     }
 }

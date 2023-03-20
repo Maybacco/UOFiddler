@@ -1082,6 +1082,7 @@ namespace UoFiddler.Controls.Forms
                 {
                     return;
                 }
+               
 
                 AnimIdx edit = AnimationEdit.GetAnimation(_fileType, _currentBody, _currentAction, _currentDir);
                 if (edit == null || edit.Frames.Count < trackBar2.Value)
@@ -3724,6 +3725,93 @@ namespace UoFiddler.Controls.Forms
                 {
                     trackBarDirection.Value = 0;
                 }
+            }
+        }
+
+        private void SameCenterAllDirButton_Click(object sender, EventArgs e)
+        {
+            // TODO: there is no undo for same center button
+            try
+            {
+                if (_fileType == 0)
+                {
+                    return;
+                }
+
+
+                for (int dir = 0; dir <= 4; dir++)
+                {
+                    AnimIdx edit = AnimationEdit.GetAnimation(_fileType, _currentBody, _currentAction, dir);
+                    if (edit == null || edit.Frames.Count < trackBar2.Value)
+                    {
+                        return;
+                    }
+
+                    FrameEdit[] frame = new FrameEdit[edit.Frames.Count];
+                    for (int index = 0; index < edit.Frames.Count; index++)
+                    {
+                        frame[index] = edit.Frames[index];
+                        frame[index].ChangeCenter((int)numericUpDownCx.Value, (int)numericUpDownCy.Value);
+                        Options.ChangedUltimaClass["Animations"] = true;
+                        animationPictureBox.Invalidate();
+                    }
+                }
+
+            }
+            catch (NullReferenceException)
+            {
+                // TODO: add logging or fix?
+                // ignored
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_fileType == 0)
+                {
+                    return;
+                }
+
+                for(int action = 0; action <= 12; action++)
+                {
+
+                    for (int dir = 0; dir <= 4; dir++)
+                    {
+                        AnimIdx edit = AnimationEdit.GetAnimation(_fileType, _currentBody, action, dir);
+                        if (edit == null || edit.Frames == null || edit.Frames.Count < trackBar2.Value)
+                        {
+                            continue;
+                        }
+
+
+                        FrameEdit[] frame = new FrameEdit[edit.Frames.Count];
+                        for (int index = 0; index < edit.Frames.Count; index++)
+                        {
+
+
+
+
+                            frame[index] = edit.Frames[index];
+                            var newX = frame[index].Center.X + numericUpDown3.Value;
+                            var newY = frame[index].Center.Y + numericUpDown4.Value;
+                            frame[index].ChangeCenter((int)newX, (int)newY);
+                            Options.ChangedUltimaClass["Animations"] = true;
+                            animationPictureBox.Invalidate();
+                        }
+                    }
+
+                }
+
+
+
+
+            }
+            catch (NullReferenceException)
+            {
+                // TODO: add logging or fix?
+                // ignored
             }
         }
     }
