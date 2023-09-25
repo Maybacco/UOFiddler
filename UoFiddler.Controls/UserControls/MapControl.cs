@@ -22,6 +22,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Ultima;
 using UoFiddler.Controls.Classes;
 using UoFiddler.Controls.Forms;
@@ -1457,10 +1458,11 @@ namespace UoFiddler.Controls.UserControls
         private void OnClickImportDiff(object sender, EventArgs e)
         {
             _succImported = false;
+            string fileList = "";
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Multiselect = false;
+                openFileDialog.Multiselect = true;
                 openFileDialog.Title = "Choose tbtdiff file to open";
                 openFileDialog.CheckFileExists = true;
                 openFileDialog.InitialDirectory = Options.OutputPath;
@@ -1471,7 +1473,7 @@ namespace UoFiddler.Controls.UserControls
                 if (!(openFileDialog.ShowDialog() == DialogResult.OK))
                     return;
 
-                string diff = openFileDialog.FileName;
+                //string diff = openFileDialog.FileName;
                 string mapPath = Files.GetFilePath($"map{_currMapId}.mul");
 
                 BinaryReader mapReader;
@@ -1523,158 +1525,126 @@ namespace UoFiddler.Controls.UserControls
                 string mapMul = Path.Combine(Options.OutputPath, $"map{_currMapId}.mul");
                 string staIdx = Path.Combine(Options.OutputPath, $"staidx{_currMapId}.mul");
                 string staMul = Path.Combine(Options.OutputPath, $"statics{_currMapId}.mul");
+                fileList = string.Join(", ", openFileDialog.SafeFileNames);
 
-
-                using (FileStream fsDiff = new FileStream(diff, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (BinaryReader diffReader = new BinaryReader(fsDiff))
+                if (openFileDialog.SafeFileNames.Count() > 1)
                 {
-                    int diffBlockWidth = diffReader.ReadInt32();
-                    int diffBlockHeight = diffReader.ReadInt32();
+                    ProgressBar.Minimum = 0;
+                    ProgressBar.Maximum = openFileDialog.SafeFileNames.Count();
+                    ProgressBar.Step = 1;
+                    ProgressBar.Value = 1;
+                    ProgressBar.Visible = true;
+                }
 
-                    if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
-                    {
-                        MessageBox.Show("Size missmatch!", "Size Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                        return;
-                    }
+                string tempMap = "";
+                string tempIdx = "";
+                string tempMul= "";
 
-                    byte mode = diffReader.ReadByte();
-                    if ((mode & 1) == 1)
+                foreach (String diff in openFileDialog.FileNames)
+                {
+                    
+                    using (FileStream fsDiff = new FileStream(diff, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (BinaryReader diffReader = new BinaryReader(fsDiff))
                     {
-                        using (FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write))
-                        using (BinaryWriter binMapMul = new BinaryWriter(fsMapMul))
+                        int diffBlockWidth = diffReader.ReadInt32();
+                        int diffBlockHeight = diffReader.ReadInt32();
+
+                        if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
                         {
-                            int currBlockDiff = diffReader.ReadInt32();
-                            for (int x = 0; x < blockWidth; x++)
+                            MessageBox.Show("Size missmatch!", "Size Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                            return;
+                        }
+
+                        byte mode = diffReader.ReadByte();
+                        if ((mode & 1) == 1)
+                        {
+                            using (FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write))
+                            using (BinaryWriter binMapMul = new BinaryWriter(fsMapMul))
                             {
-                                for (int y = 0; y < blockHeight; y++)
+                                int currBlockDiff = diffReader.ReadInt32();
+                                for (int x = 0; x < blockWidth; x++)
                                 {
-                                    
-                                    int currBlock = (x * blockHeight) + y;
-
-                                    mapReader.BaseStream.Seek(currBlock * 196, SeekOrigin.Begin);
-
-                                    int header = mapReader.ReadInt32();
-                                    binMapMul.Write(header);
-
-                                    if (currBlockDiff == currBlock)
+                                    for (int y = 0; y < blockHeight; y++)
                                     {
-                                        for (int i = 0; i < 64; i++)
-                                        {
-                                            ushort tileId = diffReader.ReadUInt16();
-                                            sbyte z = diffReader.ReadSByte();
 
-                                            binMapMul.Write(tileId);
-                                            binMapMul.Write(z);
+                                        int currBlock = (x * blockHeight) + y;
+
+                                        mapReader.BaseStream.Seek(currBlock * 196, SeekOrigin.Begin);
+
+                                        int header = mapReader.ReadInt32();
+                                        binMapMul.Write(header);
+
+                                        if (currBlockDiff == currBlock)
+                                        {
+                                            for (int i = 0; i < 64; i++)
+                                            {
+                                                ushort tileId = diffReader.ReadUInt16();
+                                                sbyte z = diffReader.ReadSByte();
+
+                                                binMapMul.Write(tileId);
+                                                binMapMul.Write(z);
+                                            }
+                                            currBlockDiff = diffReader.ReadInt32();
                                         }
-                                        currBlockDiff = diffReader.ReadInt32();
-                                    }
-                                    else
-                                    {
-                                        for (int i = 0; i < 64; ++i)
+                                        else
                                         {
-                                            ushort tileId = mapReader.ReadUInt16();
-                                            sbyte z = mapReader.ReadSByte();
+                                            for (int i = 0; i < 64; ++i)
+                                            {
+                                                ushort tileId = mapReader.ReadUInt16();
+                                                sbyte z = mapReader.ReadSByte();
 
-                                            binMapMul.Write(tileId);
-                                            binMapMul.Write(z);
+                                                binMapMul.Write(tileId);
+                                                binMapMul.Write(z);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    if ((mode & 2) == 2)
-                    {
-                        using (FileStream fsStaIdx = new FileStream(staIdx, FileMode.Create, FileAccess.Write, FileShare.Write),
-                                    fsStaMul = new FileStream(staMul, FileMode.Create, FileAccess.Write, FileShare.Write))
-                        using (BinaryWriter binStaIdx = new BinaryWriter(fsStaIdx),
-                                    binStaMul = new BinaryWriter(fsStaMul))
+                        if ((mode & 2) == 2)
                         {
-                            int currBlockDiff = diffReader.ReadInt32();
-                            for (int x = 0; x < blockWidth; x++)
+                            using (FileStream fsStaIdx = new FileStream(staIdx, FileMode.Create, FileAccess.Write, FileShare.Write),
+                                        fsStaMul = new FileStream(staMul, FileMode.Create, FileAccess.Write, FileShare.Write))
+                            using (BinaryWriter binStaIdx = new BinaryWriter(fsStaIdx),
+                                        binStaMul = new BinaryWriter(fsStaMul))
                             {
-                                for (int y = 0; y < blockHeight; y++)
+                                int currBlockDiff = diffReader.ReadInt32();
+                                for (int x = 0; x < blockWidth; x++)
                                 {
-                                    int currBlock = (x * blockHeight) + y;
-
-                                    int fsMulLookup = (int)fsStaMul.Position;
-                                    int extra = 0;
-
-                                    if (currBlockDiff == currBlock)
+                                    for (int y = 0; y < blockHeight; y++)
                                     {
-                                        for (byte relativeX = 0; relativeX < 8; relativeX++)
+                                        int currBlock = (x * blockHeight) + y;
+
+                                        int fsMulLookup = (int)fsStaMul.Position;
+                                        int extra = 0;
+
+                                        if (currBlockDiff == currBlock)
                                         {
-                                            for (byte relativeY = 0; relativeY < 8; relativeY++)
+                                            for (byte relativeX = 0; relativeX < 8; relativeX++)
                                             {
-                                                int itemcount = diffReader.ReadInt32();
-                                                for (int i= 0; i < itemcount; i++)
+                                                for (byte relativeY = 0; relativeY < 8; relativeY++)
                                                 {
-                                                    ushort itemID = diffReader.ReadUInt16();
-                                                    sbyte itemZ = diffReader.ReadSByte();
-                                                    ushort itemHue = diffReader.ReadUInt16();
+                                                    int itemcount = diffReader.ReadInt32();
+                                                    for (int i = 0; i < itemcount; i++)
+                                                    {
+                                                        ushort itemID = diffReader.ReadUInt16();
+                                                        sbyte itemZ = diffReader.ReadSByte();
+                                                        ushort itemHue = diffReader.ReadUInt16();
 
-                                                    binStaMul.Write(itemID);
-                                                    binStaMul.Write(relativeX);
-                                                    binStaMul.Write(relativeY);
-                                                    binStaMul.Write(itemZ);
-                                                    binStaMul.Write(itemHue);
+                                                        binStaMul.Write(itemID);
+                                                        binStaMul.Write(relativeX);
+                                                        binStaMul.Write(relativeY);
+                                                        binStaMul.Write(itemZ);
+                                                        binStaMul.Write(itemHue);
+                                                    }
                                                 }
-                                            }
-                                        }
-
-                                        int fsMulLength = (int)fsStaMul.Position - fsMulLookup;
-                                        if (fsMulLength > 0)
-                                        {
-                                            binStaIdx.Write(fsMulLookup); //lookup
-                                            binStaIdx.Write(fsMulLength); // length
-                                            binStaIdx.Write(extra); // extra
-                                        }
-                                        else
-                                        {
-                                            binStaIdx.Write(-1); // lookup
-                                            binStaIdx.Write(-1); // length
-                                            binStaIdx.Write(-1); // extra
-                                        }
-                                        currBlockDiff = diffReader.ReadInt32(); //leggo il prossimo
-                                    }
-                                    else
-                                    {
-                                        int lookup, length;
-                                        indexReader.BaseStream.Seek(((x * blockHeight) + y) * 12, SeekOrigin.Begin);
-                                        lookup = indexReader.ReadInt32();
-                                        length = indexReader.ReadInt32();
-                                        extra = indexReader.ReadInt32();
-
-                                        if (lookup < 0 || length <= 0)
-                                        {
-                                            binStaIdx.Write(-1); // lookup
-                                            binStaIdx.Write(-1); // length
-                                            binStaIdx.Write(-1); // extra
-                                        }
-                                        else
-                                        {
-                                            mStatics.Seek(lookup, SeekOrigin.Begin);
-                                            int count = length / 7;
-                                            for (int i = 0; i < count; ++i)
-                                            {
-                                                ushort itemId = staticsReader.ReadUInt16();
-                                                byte itemX = staticsReader.ReadByte();
-                                                byte itemY = staticsReader.ReadByte();
-                                                sbyte itemZ = staticsReader.ReadSByte();
-                                                short itemHue = staticsReader.ReadInt16();
-
-                                                binStaMul.Write(itemId);
-                                                binStaMul.Write(itemX);
-                                                binStaMul.Write(itemY);
-                                                binStaMul.Write(itemZ);
-                                                binStaMul.Write(itemHue);
                                             }
 
                                             int fsMulLength = (int)fsStaMul.Position - fsMulLookup;
                                             if (fsMulLength > 0)
                                             {
-                                                binStaIdx.Write(fsMulLookup); // lookup
+                                                binStaIdx.Write(fsMulLookup); //lookup
                                                 binStaIdx.Write(fsMulLength); // length
                                                 binStaIdx.Write(extra); // extra
                                             }
@@ -1684,19 +1654,108 @@ namespace UoFiddler.Controls.UserControls
                                                 binStaIdx.Write(-1); // length
                                                 binStaIdx.Write(-1); // extra
                                             }
+                                            currBlockDiff = diffReader.ReadInt32(); //leggo il prossimo
+                                        }
+                                        else
+                                        {
+                                            int lookup, length;
+                                            indexReader.BaseStream.Seek(((x * blockHeight) + y) * 12, SeekOrigin.Begin);
+                                            lookup = indexReader.ReadInt32();
+                                            length = indexReader.ReadInt32();
+                                            extra = indexReader.ReadInt32();
+
+                                            if (lookup < 0 || length <= 0)
+                                            {
+                                                binStaIdx.Write(-1); // lookup
+                                                binStaIdx.Write(-1); // length
+                                                binStaIdx.Write(-1); // extra
+                                            }
+                                            else
+                                            {
+                                                mStatics.Seek(lookup, SeekOrigin.Begin);
+                                                int count = length / 7;
+                                                for (int i = 0; i < count; ++i)
+                                                {
+                                                    ushort itemId = staticsReader.ReadUInt16();
+                                                    byte itemX = staticsReader.ReadByte();
+                                                    byte itemY = staticsReader.ReadByte();
+                                                    sbyte itemZ = staticsReader.ReadSByte();
+                                                    short itemHue = staticsReader.ReadInt16();
+
+                                                    binStaMul.Write(itemId);
+                                                    binStaMul.Write(itemX);
+                                                    binStaMul.Write(itemY);
+                                                    binStaMul.Write(itemZ);
+                                                    binStaMul.Write(itemHue);
+                                                }
+
+                                                int fsMulLength = (int)fsStaMul.Position - fsMulLookup;
+                                                if (fsMulLength > 0)
+                                                {
+                                                    binStaIdx.Write(fsMulLookup); // lookup
+                                                    binStaIdx.Write(fsMulLength); // length
+                                                    binStaIdx.Write(extra); // extra
+                                                }
+                                                else
+                                                {
+                                                    binStaIdx.Write(-1); // lookup
+                                                    binStaIdx.Write(-1); // length
+                                                    binStaIdx.Write(-1); // extra
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     }
+
+                    if (openFileDialog.SafeFileNames.Count() > 1)
+                    {
+                        ProgressBar.PerformStep();
+                    }
+
+                    mapReader.Close();
+                    indexReader.Close();
+                    staticsReader.Close();
+
+                    tempMap = Path.Combine(Files.RootDir, $"map{_currMapId}_temp.mul");
+                    tempIdx = Path.Combine(Files.RootDir, $"staidx{_currMapId}_temp.mul");
+                    tempMul = Path.Combine(Files.RootDir, $"statics{_currMapId}_temp.mul");
+
+                    File.Copy(Path.Combine(Options.OutputPath, $"map{_currMapId}.mul"), tempMap, true);
+                    File.Copy(Path.Combine(Options.OutputPath, $"staidx{_currMapId}.mul"), tempIdx, true);
+                    File.Copy(Path.Combine(Options.OutputPath, $"statics{_currMapId}.mul"), tempMul, true);
+
+                    FileStream mMap = new FileStream(tempMap, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    mapReader = new BinaryReader(mMap);
+                    FileStream mIndex = new FileStream(tempIdx, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    indexReader = new BinaryReader(mIndex);
+                    mStatics = new FileStream(tempMul, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    staticsReader = new BinaryReader(mStatics);
+
+
                 }
+
                 mapReader.Close();
                 indexReader.Close();
                 staticsReader.Close();
+
+                if (File.Exists(tempMap))
+                    File.Delete(tempMap);
+                if (File.Exists(tempIdx))
+                    File.Delete(tempIdx);
+                if (File.Exists(tempMul))
+                    File.Delete(tempMul);
+
+                if (openFileDialog.SafeFileNames.Count() > 1)
+                {
+                    ProgressBar.Visible = false;
+                    ProgressBar.Value = 0;
+                }
             }
 
-            MessageBox.Show($"TbtDiff patch successfully loaded! New files saved in: {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
+            MessageBox.Show($"TbtDiff patches successfully loaded: {fileList} ! New files saved in: {Options.OutputPath}", "Saved", MessageBoxButtons.OK,
                 MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
 
             _succImported = true;

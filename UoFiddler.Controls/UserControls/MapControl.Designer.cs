@@ -115,7 +115,6 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripDropDownButton6 = new System.Windows.Forms.ToolStripDropDownButton();
             this.importTBTDIFFPackageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importJsonPackageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.multiTBTDiffImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton7 = new System.Windows.Forms.ToolStripDropDownButton();
             this.addSelectionToRegionAreasListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -719,7 +718,6 @@ namespace UoFiddler.Controls.UserControls
             this.toolStripDropDownButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton6.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importTBTDIFFPackageToolStripMenuItem,
-            this.multiTBTDiffImportToolStripMenuItem,
             this.importJsonPackageToolStripMenuItem});
             this.toolStripDropDownButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton6.Name = "toolStripDropDownButton6";
@@ -731,7 +729,7 @@ namespace UoFiddler.Controls.UserControls
             this.importTBTDIFFPackageToolStripMenuItem.Name = "importTBTDIFFPackageToolStripMenuItem";
             this.importTBTDIFFPackageToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.importTBTDIFFPackageToolStripMenuItem.Text = "Import TBTDiff Patch";
-            this.importTBTDIFFPackageToolStripMenuItem.Click += new System.EventHandler(this.OnClickImportDiff);
+            this.importTBTDIFFPackageToolStripMenuItem.Click += new System.EventHandler(this.OnClickMultiImportDiff);
             // 
             // importJsonPackageToolStripMenuItem
             // 
@@ -739,13 +737,6 @@ namespace UoFiddler.Controls.UserControls
             this.importJsonPackageToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.importJsonPackageToolStripMenuItem.Text = "Import Json";
             this.importJsonPackageToolStripMenuItem.Click += new System.EventHandler(this.OnClickImportJson);
-            // 
-            // multiTBTDiffImportToolStripMenuItem
-            // 
-            this.multiTBTDiffImportToolStripMenuItem.Name = "multiTBTDiffImportToolStripMenuItem";
-            this.multiTBTDiffImportToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.multiTBTDiffImportToolStripMenuItem.Text = "Multi TBTDiff Import";
-            this.multiTBTDiffImportToolStripMenuItem.Click += new System.EventHandler(this.OnClickMultiImportDiff);
             // 
             // toolStripSeparator10
             // 
@@ -1020,6 +1011,5 @@ namespace UoFiddler.Controls.UserControls
         private System.Windows.Forms.ToolStripMenuItem ShowRectanglesMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem exportResourceRegionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem multiTBTDiffImportToolStripMenuItem;
     }
 }
