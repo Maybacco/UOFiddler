@@ -532,7 +532,7 @@ namespace UoFiddler.Controls.UserControls
             this.tabPageLand.Location = new System.Drawing.Point(4, 22);
             this.tabPageLand.Name = "tabPageLand";
             this.tabPageLand.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLand.Size = new System.Drawing.Size(613, 268);
+            this.tabPageLand.Size = new System.Drawing.Size(617, 270);
             this.tabPageLand.TabIndex = 1;
             this.tabPageLand.Text = "Land Tiles";
             this.tabPageLand.UseVisualStyleBackColor = true;
@@ -552,8 +552,8 @@ namespace UoFiddler.Controls.UserControls
             this.splitContainer5.Panel2.Controls.Add(this.label23);
             this.splitContainer5.Panel2.Controls.Add(this.textBoxNameLand);
             this.splitContainer5.Panel2.Controls.Add(this.splitContainer7);
-            this.splitContainer5.Size = new System.Drawing.Size(607, 262);
-            this.splitContainer5.SplitterDistance = 200;
+            this.splitContainer5.Size = new System.Drawing.Size(611, 264);
+            this.splitContainer5.SplitterDistance = 201;
             this.splitContainer5.TabIndex = 1;
             // 
             // splitContainer6
@@ -570,8 +570,8 @@ namespace UoFiddler.Controls.UserControls
             // splitContainer6.Panel2
             // 
             this.splitContainer6.Panel2.Controls.Add(this.pictureBoxLand);
-            this.splitContainer6.Size = new System.Drawing.Size(200, 262);
-            this.splitContainer6.SplitterDistance = 159;
+            this.splitContainer6.Size = new System.Drawing.Size(201, 264);
+            this.splitContainer6.SplitterDistance = 160;
             this.splitContainer6.TabIndex = 0;
             // 
             // treeViewLand
@@ -581,7 +581,7 @@ namespace UoFiddler.Controls.UserControls
             this.treeViewLand.HideSelection = false;
             this.treeViewLand.Location = new System.Drawing.Point(0, 0);
             this.treeViewLand.Name = "treeViewLand";
-            this.treeViewLand.Size = new System.Drawing.Size(200, 159);
+            this.treeViewLand.Size = new System.Drawing.Size(201, 160);
             this.treeViewLand.TabIndex = 0;
             this.treeViewLand.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.AfterSelectTreeViewLand);
             this.treeViewLand.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TileData_KeyUp);
@@ -613,7 +613,7 @@ namespace UoFiddler.Controls.UserControls
             this.pictureBoxLand.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxLand.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxLand.Name = "pictureBoxLand";
-            this.pictureBoxLand.Size = new System.Drawing.Size(200, 99);
+            this.pictureBoxLand.Size = new System.Drawing.Size(201, 100);
             this.pictureBoxLand.TabIndex = 0;
             this.pictureBoxLand.TabStop = false;
             // 
@@ -652,7 +652,7 @@ namespace UoFiddler.Controls.UserControls
             // splitContainer7.Panel2
             // 
             this.splitContainer7.Panel2.Controls.Add(this.checkedListBox2);
-            this.splitContainer7.Size = new System.Drawing.Size(403, 262);
+            this.splitContainer7.Size = new System.Drawing.Size(406, 264);
             this.splitContainer7.SplitterDistance = 27;
             this.splitContainer7.SplitterWidth = 2;
             this.splitContainer7.TabIndex = 25;
@@ -682,7 +682,7 @@ namespace UoFiddler.Controls.UserControls
             this.checkedListBox2.Location = new System.Drawing.Point(0, 0);
             this.checkedListBox2.MultiColumn = true;
             this.checkedListBox2.Name = "checkedListBox2";
-            this.checkedListBox2.Size = new System.Drawing.Size(403, 233);
+            this.checkedListBox2.Size = new System.Drawing.Size(406, 235);
             this.checkedListBox2.TabIndex = 0;
             this.checkedListBox2.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.OnFlagItemCheckLandTiles);
             // 
