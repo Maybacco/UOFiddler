@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -390,13 +391,38 @@ namespace UoFiddler.Controls.UserControls
             return false;
         }
 
+        private void ExtractList_Click(object sender, EventArgs e)
+        {
+            List<string> fileNames = new List<string>();
+
+            foreach (TreeNode child in treeView.Nodes)
+            {
+                if (child.Checked)
+                {
+                    var id = (int)child.Tag - 1;
+                    Sounds.IsValidSound(id, out string name, out _);
+                    string fileName = Path.Combine(Options.OutputPath, $"{name}");
+                    if (!fileName.EndsWith(".wav"))
+                    {
+                        fileName += ".wav";
+                    }
+                    ExtractSound(fileName, id);
+                    fileNames.Add(name);
+                    child.Checked = false;
+                }
+            }
+            MessageBox.Show($"Sound extracted: {fileNames.Count}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+
+
+        }
+
         private void OnClickExtract(object sender, EventArgs e)
         {
             if (treeView.SelectedNode == null)
             {
                 return;
             }
-
+            
             int id = (int)treeView.SelectedNode.Tag - 1;
             Sounds.IsValidSound(id, out string name, out _);
             string fileName = Path.Combine(Options.OutputPath, $"{name}");
@@ -404,7 +430,13 @@ namespace UoFiddler.Controls.UserControls
             {
                 fileName += ".wav";
             }
+            ExtractSound(fileName, id);
 
+            MessageBox.Show($"Sound saved to {fileName}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+        }
+
+        private void ExtractSound(string fileName, int id)
+        {
             using (MemoryStream stream = new MemoryStream(Sounds.GetSound(id).buffer))
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Write))
@@ -412,7 +444,6 @@ namespace UoFiddler.Controls.UserControls
                     stream.WriteTo(fs);
                 }
             }
-            MessageBox.Show($"Sound saved to {fileName}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
         }
 
         private void OnClickSave(object sender, EventArgs e)
@@ -512,13 +543,27 @@ namespace UoFiddler.Controls.UserControls
             {
                 using (OpenFileDialog dialog = new OpenFileDialog())
                 {
-                    dialog.Multiselect = false;
+                    dialog.Multiselect = true;
                     dialog.Title = "Choose wave file";
                     dialog.CheckFileExists = true;
                     dialog.Filter = "wav file (*.wav)|*.wav";
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        file = dialog.FileName;
+                        if (dialog.FileNames.Length > 1)
+                        {
+                            for(int i = 0; i < dialog.FileNames.Length; i++)
+                            {
+                                file = dialog.FileNames[i];
+                                ImportSound(file, i > 0 ? 1 : 0, true);
+                            }
+                        }
+                        else
+                        {
+                            file = dialog.FileName;
+                            ImportSound(file);
+
+
+                        }
                     }
                     else
                     {
@@ -529,9 +574,17 @@ namespace UoFiddler.Controls.UserControls
             else
             {
                 file = _wavChosen;
+                ImportSound(file);
+
             }
 
+        }
+ 
+        private void ImportSound(string file,int offSet = 0, bool silent = false)
+        {
             int id = (int)treeView.SelectedNode.Tag;
+            id += offSet;
+
             string name = Path.GetFileName(file);
             if (name.Length > 32)
             {
@@ -543,7 +596,7 @@ namespace UoFiddler.Controls.UserControls
                 MessageBox.Show("Invalid Filename", "Add/Replace", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
             }
 
-            if (Sounds.IsValidSound(id - 1, out _, out _))
+            if (Sounds.IsValidSound(id - 1, out _, out _) && !silent)
             {
                 DialogResult result = MessageBox.Show($"Are you sure to replace {treeView.SelectedNode.Text}?",
                     "Replace", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
@@ -749,5 +802,7 @@ namespace UoFiddler.Controls.UserControls
         {
             DoSearchName(SearchNameTextbox.Text, false, true);
         }
+
+
     }
 }
