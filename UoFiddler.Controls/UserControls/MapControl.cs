@@ -1549,11 +1549,12 @@ namespace UoFiddler.Controls.UserControls
                         int diffBlockWidth = diffReader.ReadInt32();
                         int diffBlockHeight = diffReader.ReadInt32();
 
-                        if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+
+                        /*if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
                         {
                             MessageBox.Show("Size missmatch!", "Size Error", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
                             return;
-                        }
+                        }*/
 
                         byte mode = diffReader.ReadByte();
                         if ((mode & 1) == 1)
@@ -1561,7 +1562,23 @@ namespace UoFiddler.Controls.UserControls
                             using (FileStream fsMapMul = new FileStream(mapMul, FileMode.Create, FileAccess.Write, FileShare.Write))
                             using (BinaryWriter binMapMul = new BinaryWriter(fsMapMul))
                             {
+                                int offsetBlock = 0;
                                 int currBlockDiff = diffReader.ReadInt32();
+
+                                if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+                                {
+                                    int xBlockStart = currBlockDiff / diffBlockHeight;
+                                    int yBlockStart = currBlockDiff % diffBlockHeight;
+                                    currBlockDiff = (xBlockStart * blockHeight) + yBlockStart;
+                                }
+
+                                if (_xStart > 0 && _yStart > 0)
+                                {
+                                    int xBlockStart = _xStart >> 3;
+                                    int yBlockStart = _yStart >> 3;;
+                                    int artificialBlock = xBlockStart * blockHeight + yBlockStart;
+                                    offsetBlock = artificialBlock - currBlockDiff;
+                                }
                                 for (int x = 0; x < blockWidth; x++)
                                 {
                                     for (int y = 0; y < blockHeight; y++)
@@ -1574,7 +1591,7 @@ namespace UoFiddler.Controls.UserControls
                                         int header = mapReader.ReadInt32();
                                         binMapMul.Write(header);
 
-                                        if (currBlockDiff == currBlock)
+                                        if ((currBlockDiff + offsetBlock) == currBlock)
                                         {
                                             for (int i = 0; i < 64; i++)
                                             {
@@ -1585,6 +1602,12 @@ namespace UoFiddler.Controls.UserControls
                                                 binMapMul.Write(z);
                                             }
                                             currBlockDiff = diffReader.ReadInt32();
+                                            if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+                                            {
+                                                int xBlockStart = currBlockDiff / diffBlockHeight;
+                                                int yBlockStart = currBlockDiff % diffBlockHeight;
+                                                currBlockDiff = (xBlockStart * blockHeight) + yBlockStart;
+                                            }
                                         }
                                         else
                                         {
@@ -1609,17 +1632,33 @@ namespace UoFiddler.Controls.UserControls
                             using (BinaryWriter binStaIdx = new BinaryWriter(fsStaIdx),
                                         binStaMul = new BinaryWriter(fsStaMul))
                             {
+                                int offsetBlock = 0;
                                 int currBlockDiff = diffReader.ReadInt32();
+                                if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+                                {
+                                    int xBlockStart = currBlockDiff / diffBlockHeight;
+                                    int yBlockStart = currBlockDiff % diffBlockHeight;
+                                    currBlockDiff = (xBlockStart * blockHeight) + yBlockStart;
+                                }
+                                if (_xStart > 0 && _yStart > 0)
+                                {
+                                    int xBlockStart = _xStart >> 3;
+                                    int yBlockStart = _yStart >> 3;
+                                    int artificialBlock = xBlockStart * blockHeight + yBlockStart;
+                                    offsetBlock = artificialBlock - currBlockDiff;
+                                }
                                 for (int x = 0; x < blockWidth; x++)
                                 {
                                     for (int y = 0; y < blockHeight; y++)
                                     {
                                         int currBlock = (x * blockHeight) + y;
 
+                                        
+
                                         int fsMulLookup = (int)fsStaMul.Position;
                                         int extra = 0;
 
-                                        if (currBlockDiff == currBlock)
+                                        if ((currBlockDiff + offsetBlock) == currBlock)
                                         {
                                             for (byte relativeX = 0; relativeX < 8; relativeX++)
                                             {
@@ -1655,6 +1694,12 @@ namespace UoFiddler.Controls.UserControls
                                                 binStaIdx.Write(-1); // extra
                                             }
                                             currBlockDiff = diffReader.ReadInt32(); //leggo il prossimo
+                                            if (diffBlockWidth != blockWidth && diffBlockHeight != blockHeight)
+                                            {
+                                                int xBlockStart = currBlockDiff / diffBlockHeight;
+                                                int yBlockStart = currBlockDiff % diffBlockHeight;
+                                                currBlockDiff = (xBlockStart * blockHeight) + yBlockStart;
+                                            }
                                         }
                                         else
                                         {

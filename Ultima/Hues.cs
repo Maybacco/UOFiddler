@@ -449,6 +449,11 @@ namespace Ultima
                 }
             }
         }
+
+        public void Import(string file, bool v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
