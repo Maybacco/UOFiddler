@@ -403,7 +403,7 @@ namespace Ultima
             }
         }
 
-        public void Import(string fileName)
+        public void Import(string fileName, bool resetNames = false)
         {
             if (!File.Exists(fileName))
             {
@@ -427,7 +427,14 @@ namespace Ultima
                         switch (i)
                         {
                             case -3:
-                                Name = line;
+                                if (resetNames)
+                                {
+                                    Name = "Hue";
+                                }
+                                else
+                                {
+                                    Name = line;
+                                }
                                 break;
                             case -2:
                                 TableStart = (short)(ushort.Parse(line) | 0x8000);
